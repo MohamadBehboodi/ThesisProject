@@ -1,8 +1,14 @@
 from pathlib import Path
 import hashlib, json, os, random, platform, sys
 import numpy as np
+import time
+import subprocess
+from datetime import datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[1]
+# Set this before device/environment inspection can initialize CUDA, so the
+# recorded environment and subsequent deterministic cuBLAS setup agree.
+os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG', ':4096:8')
 
 def atomic_json(path, obj):
     path = Path(path)
@@ -46,6 +52,11 @@ def seed_all(seed):
 
 def environment():
     import torch, sklearn, pandas
+    try:
+        revision = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=ROOT, capture_output=True, text=True, timeout=5)
+        commit = revision.stdout.strip() if revision.returncode == 0 else None
+    except (OSError, subprocess.TimeoutExpired):
+        commit = None
     return dict(
         python=sys.version,
         platform=platform.platform(), 
@@ -54,7 +65,11 @@ def environment():
         pandas=pandas.__version__,
         sklearn=sklearn.__version__,
         cuda=torch.version.cuda,
-        gpu=torch.cuda.get_device_name(0) if torch.cuda.is_available() else None
+        gpu=torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
+        gpu_dedicated_bytes=torch.cuda.get_device_properties(0).total_memory if torch.cuda.is_available() else None,
+        torch_threads=torch.get_num_threads(),
+        cublas_workspace_config=os.environ.get('CUBLAS_WORKSPACE_CONFIG'),
+        git_commit=commit
     )
 
 def atomic_torch(path, obj):
@@ -81,3 +96,44 @@ def restore_rng(state):
     torch.set_rng_state(state['torch'])
     if state['cuda'] and torch.cuda.is_available():
         torch.cuda.set_rng_state_all(state['cuda'])
+
+
+class CumulativeTimer:
+    """Persist active work across resumptions; exclude time between invocations.
+
+    Checkpoint at progress boundaries. A hard kill may lose time since the
+    last checkpoint. The caller holds the lock associated with this work.
+    """
+
+    def __init__(self, path):
+        self.path = Path(path)
+
+    def __enter__(self):
+        old = json.loads(self.path.read_text(encoding='utf-8')) if self.path.exists() else {}
+        self.previous = float(old.get('seconds', 0.0))
+        self.sessions = int(old.get('sessions', 0)) + 1
+        self.uncertain_sessions = int(old.get('uncertain_sessions', 0)) + int(old.get('status') == 'running')
+        self.started = time.perf_counter()
+        self.started_utc = datetime.now(timezone.utc).isoformat()
+        self.checkpoint()
+        return self
+
+    @property
+    def session_seconds(self):
+        return time.perf_counter() - self.started
+
+    @property
+    def seconds(self):
+        return self.previous + self.session_seconds
+
+    def checkpoint(self, status='running'):
+        atomic_json(self.path, dict(
+            seconds=self.seconds, session_seconds=self.session_seconds,
+            sessions=self.sessions, uncertain_sessions=self.uncertain_sessions,
+            status=status, started_utc=self.started_utc,
+            updated_utc=datetime.now(timezone.utc).isoformat(),
+            note='Active time only. A hard kill may lose time since the last progress checkpoint.'
+        ))
+
+    def __exit__(self, kind, value, traceback):
+        self.checkpoint('completed' if kind is None else 'interrupted')

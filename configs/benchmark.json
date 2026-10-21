@@ -1,0 +1,88 @@
+{
+  "experiment_name": "DEV_V3_BENCHMARK",
+  "data_path": "data/financial_data.csv.gz",
+  "output_root": "outputs/dev_v3/benchmark",
+  "min_days": 100,
+  "start_year": 1389,
+  "validation_years": [
+    1396,
+    1397,
+    1398,
+    1399,
+    1400,
+    1401
+  ],
+  "test_years": [
+    1402,
+    1403
+  ],
+  "label_gap_years": 1,
+  "sequence_modes": [
+    "full_year",
+    "last100"
+  ],
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "hidden_widths": [
+    4000,
+    2000,
+    2000,
+    30
+  ],
+  "dropout": 0.1,
+  "epochs": 30,
+  "batch_size": 8,
+  "learning_rate": 0.001,
+  "l1_coefficient": 1e-06,
+  "gradient_clip": 1.0,
+  "fitness": "half_rmse",
+  "population": 200,
+  "evaluations": 50000,
+  "tar_evaluations": 50000,
+  "weight_bound": 1.0,
+  "population_initialization": "warm_normal",
+  "initial_std": 0.01,
+  "vector_chunk": 262144,
+  "tar_lambda_policy": "literal",
+  "ga_mutation_probability": 0.01,
+  "ga_mutation_std": 0.02,
+  "models": [
+    "DLSTM",
+    "LogisticRegression",
+    "MajorityClass",
+    "CHOA",
+    "WCHOA",
+    "GSOBL_CHOA",
+    "TAR_CHOA",
+    "GA",
+    "WOA"
+  ],
+  "device": "cuda",
+  "bootstrap_repeats": 2000,
+  "retain_populations": false,
+  "weight_bound_policy": "expand_to_initial",
+  "chimp_chaotic_probability": 0.5,
+  "chaos_iterations": 3,
+  "rmse_epsilon": 1e-12,
+  "progress_every_evaluations": 10,
+  "training_log_every_batches": 10,
+  "benchmark": {
+    "warmup_steps": 1,
+    "training_steps": 3,
+    "fitness_repeats": 2,
+    "host_population": 4,
+    "host_generations": 1,
+    "checkpoint_io": true,
+    "splits": [
+      "first_validation",
+      "final_training"
+    ],
+    "modes": [
+      "full_year",
+      "last100"
+    ]
+  }
+}

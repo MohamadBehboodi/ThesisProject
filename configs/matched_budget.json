@@ -1,7 +1,7 @@
 {
-  "experiment_name": "matched_50000_FE",
+  "experiment_name": "DEV_V3_MATCHED_BUDGET",
   "data_path": "data/financial_data.csv.gz",
-  "output_root": "outputs/matched_budget",
+  "output_root": "outputs/dev_v3/matched_budget",
   "min_days": 100,
   "start_year": 1389,
   "validation_years": [
@@ -52,12 +52,21 @@
   "models": [
     "DLSTM",
     "LogisticRegression",
+    "MajorityClass",
     "CHOA",
     "WCHOA",
     "GSOBL_CHOA",
-    "TAR_CHOA"
+    "TAR_CHOA",
+    "GA",
+    "WOA"
   ],
   "device": "cuda",
   "bootstrap_repeats": 2000,
-  "retain_populations": false
+  "retain_populations": false,
+  "weight_bound_policy": "expand_to_initial",
+  "chimp_chaotic_probability": 0.5,
+  "chaos_iterations": 3,
+  "rmse_epsilon": 1e-12,
+  "progress_every_evaluations": 10,
+  "training_log_every_batches": 10
 }

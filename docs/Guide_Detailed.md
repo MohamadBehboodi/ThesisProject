@@ -1,82 +1,128 @@
-# Start with a linux server which has GPU
-# Recommended python version is 3.11 or 3.12, Other requirements has been explained at "requirements.txt"
+# Windows execution guide - dev v3
 
-# If you use bash, you can run following command to setup project:
-  ```bash
-  cd DLSTM_Thesis
-  python -m venv .venv
-  source .venv/bin/activate
-  python -m pip install -r requirements.txt
-  python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
-  jupyter lab
-  ```
+## Existing environment
 
-# If CUDA is set to `False`, install the PyTorch version compatible with the server's driver/CUDA using the official instructions at https://pytorch.org/get-started/locally/. The final configuration does not automatically switch to CPU or a smaller network. Installing the packages requires an internet connection on the server; however, training does not require internet access once installation is complete.
+Use the Windows Python environment where CUDA-enabled PyTorch already works.
+Check the interpreter and device before execution:
 
-# Notebooks: 
-  | File | Task |
-  | 00 | Environment review, parameter count, and data preparation |
-  | 01 | DLSTM validation for the full year and the last 100 days; input length selection |
-  | 02 | Validation of DLSTM and logistic regression for the selected configuration |
-  | 03 | CHOA validation |
-  | 04 | WCHOA validation |
-  | 05 | GSOBL-CHOA validation |
-  | 06 | TAR-CHOA validation |
-  | 07 | Optional GA and WOA comparisons; not equivalent to ARGA/ARWOA |
-  | 08 | Threshold and protocol finalization; final training and test evaluation |
-  | 09 | Results table, plots, and pairwise statistical comparisons |
-  | 10 | Independent data retrieval from saved notebook outputs |
+```powershell
+python -c "import sys,torch; print(sys.executable); print(torch.__version__,torch.version.cuda,torch.cuda.is_available())"
+nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv
+```
 
-# All notebooks read from `configs/final.json`; configure the data and output paths only there. Upon re-execution, completed runs are not repeated, and incomplete runs resume from the checkpoint. The notebooks contain no hardcoded final outputs.
+No new external runtime package was added. For a fresh environment, install a suitable
+CUDA-enabled PyTorch following https://pytorch.org/get-started/locally/ before the
+remaining requirements. Native Windows locking uses msvcrt; WSL is not required.
 
-# Continues running with "tmux":
-  Using tmux for long-running processes ensures that a browser disconnection does not stop the server session. You should also save the console output:
+## First steps on dev
 
-  ```bash
-  python -m thesis.cli preflight --config configs/final.json
-  python -u -m thesis.cli all --config configs/final.json > final_run.log 2>&1
-  ```
+```powershell
+git fetch origin
+git switch dev
+git pull --ff-only origin dev
+python -m unittest discover -s tests -v
+python run.py preflight --config configs/default.json
+python -u run.py benchmark --config configs/benchmark.json 2>&1 | Tee-Object -FilePath benchmark.log
+```
 
-  Phased execution is also possible: the prepare, sequence, validate, freeze, final, and analyze actions. For example:
+Preflight checks device availability, the static Adam memory lower bound, and
+estimated output-volume capacity. It prints parameters, FEs, population buffers and
+retained-weight estimates. It cannot certify activation/workspace memory or runtime;
+the benchmark supplies those measurements. Benchmark can be run even if the full
+experiment's disk-capacity check fails, provided its own bounded workspace fits.
 
-  ```bash
-  python -u -m thesis.cli validate --models CHOA --config configs/final.json
-  ```
+Benchmark settings are in configs/benchmark.json:
+one warmup step, three timed steps, two full training fitness passes per case,
+two sequence modes and first/final training cohorts. Six host optimizers use four
+agents for one generation while preserving every weight dimension.
+Adjusting these diagnostic repeat counts changes benchmark work, not the main experiment.
 
-# Avoid running two processes simultaneously for the same run; the operating system prevents this. Do not modify code, data, or settings mid-experiment; select a new `output_root` and experiment name for each change.
+The report directory contains Benchmark_Report.md and benchmark.json. Temporary model,
+checkpoint and population buffers are removed after the benchmark. A failed/partial
+report is retained; there is no silent CPU or smaller-model fallback. If a training
+case fails, its error is recorded. Do not run a benchmark alongside another GPU job.
 
-# Project size:
-  For `hidden_widths=[4000, 2000, 2000, 30]`, 30 epochs, and a population of 200, a budget of 50,000 FEs was allocated for CHOA/WCHOA/GSOBL, while 300,000 FEs were reserved for TAR. The architecture consists of three LSTM layers and one Dense layer; however, the paper does not specify the exact type of each layer. This interpretation is inconsistent with the parameter count table provided in the paper—a discrepancy that remains unresolved. The `preflight` command displays the precise network size and the minimum disk space required for the population.
+Estimates use measured seconds per real time step, conservative longest-batch Adam
+timings and small-population host overhead. Scenario bounds are sensitivity calculations,
+not confidence intervals. A population exceeding RAM/page cache may be slower than
+the small-population extrapolation. Checkpoint load measurements are warm-cache values.
 
-  The on-disk population and candidates are evaluated on the GPU one by one; the disk does not replace the population or the search dimensions. Upon completion of a run with `retain_populations=false`, the population buffers are deleted, though `model.pt` and the results are preserved. Ensure that base model checkpoints and final weights are stored in persistent storage. The code will return an error if disk space is insufficient; it does not automatically adjust the budget or architecture.
+## Configure one output volume
 
-  Final speed cannot be estimated from a small-scale CPU run. First, observe a preflight and a single execution on the server. This package does not guarantee that a direct search of hundreds of millions of weights will complete within the timeframe claimed in the paper.
+Every notebook uses configs/default.json. Set data_path/output_root there or pass
+--output-root to the CLI. A CLI output override is local to that command; use the same
+root for every phase of that experiment. Relative config paths are project-relative.
 
-# A small test:
-  `configs/smoke.json` utilizes a small network and a very low budget; it is intended solely to verify the execution path:
+```powershell
+python run.py preflight --config configs/default.json --output-root "E:\ThesisRuns\dev-v3"
+```
 
-  ```bash
-  python -m unittest discover -s tests -v
-  python -u -m thesis.cli all --config configs/smoke.json > smoke.log 2>&1
-  ```
+Use the drive letter actually available on the server. All code/data/scientific settings
+are fingerprinted. New output roots protect old runs from incompatible changes.
+A running experiment must not pull new code or modify its config.
 
-  The smoke results are not valid for the fourth season. Its output folder is separate from the final one.
+## Notebook order
 
-# Important scientific decisions:
-  - All weights and biases are optimized directly; there is no hyperparameter search.
-  - The 30-epoch method described in the paper is ambiguous: in this version, the base model is first trained using Adam, and subsequently, optimizers refine the weights of that same model.
-  - The input window is selected using validation and the base model; all models utilize the same window and the same share-years. The mask is based on actual length, not zero values.
-  - To prevent the premature use of the following year's label, a one-year gap has been incorporated:
-  training up to the year 1400, with testing on data from 1402 and 1403. The decision regarding `label_gap_years` is
-  methodological.
-  - ARGA and ARWOA have not yet been identified; we do not have heuristic algorithms by these names in the package. The `configs/with_classical_comparators.json` file includes only `GA_reference` and `WOA_reference` as additional comparators; select this configuration before starting the full experiment.
-  - Comparing TAR with 300,000 FEs against other methods with 50,000 FEs is not a matched-budget comparison. The file `configs/matched_budget.json` is available for a separate sensitivity analysis using 50,000 FEs.
-  - A complete table of ambiguities, corrections, and selected formulas is provided in `docs/Method_Decisions.md`.
+| Notebook | Work |
+|---|---|
+| 00 | Environment/data; optional server benchmark cell |
+| 01 | Baseline validation for both sequence modes; development-only choice |
+| 02 | DLSTM, logistic regression and training-majority validation |
+| 03 | CHOA validation |
+| 04 | WCHOA validation |
+| 05 | Reconstructed GSOBL-CHOA validation |
+| 06 | TAR-CHOA validation |
+| 07 | GA and WOA validation; required main comparators |
+| 08 | Freeze OOF thresholds/protocol, then final training/evaluation |
+| 09 | Ensemble/seed/year metrics, class-specific PR, paired cluster statistics, costs |
+| 10 | Recover essential artifacts from saved notebook outputs |
 
-# Standard output for each model running:
-  The files `predictions.csv`, `metrics.json`, `config.json`, `scaler.json`, `sample_ids.json`, `history.json`, and `model.pt` (or `model.joblib` for LR) are saved under `outputs/.../runs/sequence/stage/model/seed/fold`. The final training checkpoint includes the state of the Adam optimizer and the random number generator. Checkpoints are created at the boundary of each generation; if execution is interrupted, the incomplete portion of the last generation may be recomputed, and additional actual FEs are recorded in `physical_evaluations.jsonl`.
+Stored outputs were cleared in the dev templates; historical outputs remain in main's
+commit history and the researcher's backups. Recovery functions remain independent.
 
-  The final analysis comprises the aggregated prediction across seeds, seed-specific and year-specific metrics, ROC/PR curves and confusion matrices, the confidence interval for the difference in Balanced Accuracy (using cluster bootstrapping), and a paired permutation test with Holm correction. The seeds are not assumed to be statistically independent samples. Economic interpretation and consideration of the limitations regarding generalizability to other years remain necessary.
+## Explicit CLI phases after benchmark review
 
-# Restore from notebook results:
-  After each full execution, critical data is printed in the output as a compressed capsule accompanied by a checksum. Save the notebook containing these outputs and download a standalone copy. The final cell of each notebook, when set to `RESTORE=True`, restores these capsules into a fresh folder and functions even without the `thesis` package. Deleting or truncating the outputs breaks this restoration process. Single-sample probabilities or network weights cannot be reconstructed simply by viewing or printing `F1`; the weights are not embedded within the capsule, so you must back up the `model.pt`/`checkpoint` file separately.
+```powershell
+python run.py prepare --config configs/default.json
+python -u run.py sequence --config configs/default.json
+python -u run.py validate --config configs/default.json
+python run.py freeze --config configs/default.json
+python -u run.py final --config configs/default.json
+python run.py analyze --config configs/default.json
+```
+
+Individual models can be validated with --models CHOA, --models GA WOA, etc.
+Use the same config and root throughout. The all action performs these phases in order
+and first enforces preflight's static checks. Running python run.py alone performs
+only preflight. The final run remains a later decision following server benchmarking
+and the dev-to-main merge.
+
+## Resume and backup
+
+Re-run the same action/config/root. Completed runs are skipped. Adam restores model,
+optimizer and RNG state at epoch boundaries. Population search commits alternating
+disk slots at generation boundaries. A partial generation may be replayed; actual calls
+are logged in physical_evaluations.jsonl and may exceed the committed FE budget.
+Old v1/v2 checkpoints are intentionally incompatible with the changed objectives/operators.
+
+timing.json and training_timing.json accumulate active work. A hard kill can lose time
+after the last progress checkpoint; the next invocation flags an uncertain previous
+session and never counts offline downtime as training.
+
+Completed searches remove population buffers with retain_populations=false. Interruptions
+retain them for resume. Windows maps are explicitly closed before cleanup. Back up
+model.pt, training_state.pt, predictions, configs and protocol files on durable storage.
+Notebook capsules preserve small JSON/CSV artifacts but omit model/population weights.
+
+## Outputs
+
+Each run saves predictions.csv, metrics.json, config.json, scaler.json, sample_ids.json,
+history.json and complete.json. Neural runs save model.pt; LR saves model.joblib;
+MajorityClass saves majority_model.json. Hybrid diagnostics.json includes bounds,
+warm/best fitness, changed parameter count, distance, opposition counters and TAR phases.
+
+Analysis includes model_comparison.csv, seed_metrics.csv, per-year metrics,
+compute_costs.csv, shared_warm_training_costs.json, experiment_budget.json,
+paired_comparisons.csv and diagnostic plots. Shared warm-training costs are reported
+once separately from method-specific search time. Seeds are computational repetitions,
+not additional independent company-years.

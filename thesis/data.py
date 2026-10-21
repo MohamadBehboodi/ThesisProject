@@ -93,7 +93,8 @@ def prepare(c):
             min_days=c['min_days'],
             max_days=max(x['length'] for x in rows),
             label='Already supplied: company-year t -> profitability t+1; no extra shift.',
-            information_availability='Forecast-time availability is verified.'
+            information_availability='Temporal alignment and information availability verified by the researcher during collection.',
+            annual_ratio_policy='The first ten ratios are annual statement features intentionally repeated across daily rows.'
         )
     )
 

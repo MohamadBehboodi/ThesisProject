@@ -1,7 +1,7 @@
 {
-  "experiment_name": "MAIN_RECONSTRUCTION_v2",
+  "experiment_name": "DEV_V3_DEFAULT",
   "data_path": "data/financial_data.csv.gz",
-  "output_root": "outputs/main_windows",
+  "output_root": "outputs/dev_v3/default",
   "min_days": 100,
   "start_year": 1389,
   "validation_years": [
@@ -41,7 +41,7 @@
   "fitness": "half_rmse",
   "population": 200,
   "evaluations": 50000,
-  "tar_evaluations": 300000,
+  "tar_evaluations": 50000,
   "weight_bound": 1.0,
   "population_initialization": "warm_normal",
   "initial_std": 0.01,
@@ -52,12 +52,21 @@
   "models": [
     "DLSTM",
     "LogisticRegression",
+    "MajorityClass",
     "CHOA",
     "WCHOA",
     "GSOBL_CHOA",
-    "TAR_CHOA"
+    "TAR_CHOA",
+    "GA",
+    "WOA"
   ],
   "device": "cuda",
   "bootstrap_repeats": 2000,
-  "retain_populations": false
+  "retain_populations": false,
+  "weight_bound_policy": "expand_to_initial",
+  "chimp_chaotic_probability": 0.5,
+  "chaos_iterations": 3,
+  "rmse_epsilon": 1e-12,
+  "progress_every_evaluations": 10,
+  "training_log_every_batches": 10
 }

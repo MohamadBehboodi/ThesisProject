@@ -1,135 +1,183 @@
-## Evidence hierarchy
+# Scientific implementation decisions - dev v3
 
-1. Tang, Yang, Khishe (2023), Heliyon e19431, https://doi.org/10.1016/j.heliyon.2023.e19431
-2. Author MATLAB releases supplied by the user: ChOA-V2.zip, WChOA.zip, GSOBL-ChOA.zip.
-3. CHOA mathematical note included in ChOA-V2/Brief_Mathematical_Model.pdf.
-4. Explicit implementation choices below where the above do not determine a unique method.
+## Scope and accepted data design
 
-## Traceability table
+This is an independent research implementation. Scientific mechanisms and transparent,
+testable choices take priority over copying the authors' source byte for byte.
+The researcher has verified collection dates, temporal alignment and availability.
+The first ten annual accounting ratios are intentionally repeated in daily market rows.
+The supplied label is company-year t -> profitability t+1; it is not shifted again.
 
-| Item | Evidence / implementation | Status |
-|---|---|---|
-| Hidden widths | Section 6: 4000,2000,2000,30 | retained |
-| Hidden layer types | Three recurrent LSTM layers followed by dense layer of 30 | interpretation; paper is ambiguous |
-| ReLU | Applied to outputs of each LSTM and dense hidden layer | interpretation; sigmoid/tanh remain inside PyTorch LSTM gates |
-| Output | Two logits; Softmax probabilities | retained; train CE consumes logits |
-| Input features | 18 user features, not the paper's 15 | dataset adaptation |
-| Dropout | 0.1 after each of the three recurrent layers | Section 6 |
-| L1 | First recurrent layer input/recurrent weight matrices; coefficient 1e-6 | paper specifies first layer, not coefficient or reduction; chosen sum reduction |
-| Gradient epochs | Adam 30 epochs, same baseline checkpoint for all hybrids within split/seed | 30 retained; connection to optimizer unspecified in paper |
-| Hybrid training protocol | Adam warm start then full-vector metaheuristic search; no further gradient training per candidate | explicit two-stage reconstruction, NOT verified original protocol |
-| Parameters searched | All trainable weights and biases, including recurrent matrices and both PyTorch LSTM bias vectors | direct search, NOT hyperparameter search |
-| Fitness | 0.5 sqrt(mean((P(class=1)-y)^2)) + L1 | Eq19 interpreted for probabilities; equals 2-class one-hot RMSE averaged over classes |
-| Baseline loss | Cross entropy + same L1 | chosen classification training objective; not identical to metaheuristic fitness |
-| Search population | 200 | Table3 states this for CHOA; inherited for other variants as a comparison choice |
-| CHOA/WCHOA/GSOBL budget | 50,000 objective evaluations | 200×250 for CHOA; equal FE for variants, NOT 250 generations for every variant |
-| TAR budget | 300,000 FE | Section5.2; reported separately, not compute-matched to 50,000-FE methods |
-| Initial population | Clipped warm vector plus Normal(0,0.01) perturbations; first candidate warm vector | unspecified by paper; bounds [-1,1] are chosen |
-| Sequence | Full-year versus last100, selected using baseline temporal validation only | not specified in paper; documented data design |
-| Short company-years | Exclude <100 observations in both modes | retain prior cohort definition; padding does not require this threshold |
-| Preprocessing | Prior fixed log1p market transforms, signed log1p PE; train-only scaling | dataset-specific, not claimed from paper |
-| Temporal split | Validation feature years1396–1401; test1402–1403; default one-year label gap | replaces random70/30; necessary conservative prediction design |
-| LR | 34 fixed summaries from same observation window, train-only StandardScaler, C=1 | requested additional statistical baseline; not a time-ordered sequence model |
-| Threshold | Development OOF seed-ensemble Balanced Accuracy on fixed grid0.05–0.95 | chosen, frozen before final test |
-| Metrics | Balanced Accuracy primary; F1, macroF1, ROC-AUC, average precision, etc. | classification adaptation requested by user |
+The 18 features, >=100-day eligible cohort, chronological ordering, train-only scaling,
+true-length packing, full-year/last100 development selection, existing embargo/folds,
+test years, seeds and [4000,2000,2000,30] widths are retained. Architecture/budget feasibility
+will be decided from the server benchmark. Previous discussion of missing publication
+timestamps is not treated as a data-validity blocker after the researcher's confirmation.
 
-## Important financial timing limitation
+## Model and common objective
 
-The supplied t+1 labels are accepted without another shift. A label gap of one
-feature year is used: validation1396 trains through1394; test1402–1403 trains
-through1400 with labels through1401. Test1403 uses that same fixed model, not a
-new model retrained on test1402. The retained cohort is unchanged by sequence
-length.
+Three native LSTM layers (4000,2000,2000), a Dense hidden layer of 30 and two output logits.
+Sigmoid/tanh remain inside LSTM gates; ReLU and dropout .1 follow recurrent outputs;
+the dense hidden layer uses ReLU. This is a declared interpretation of the base paper's
+layer description. The parameter count is 144,412,092 for 18 inputs, not the inconsistent
+small counts printed in the article's complexity table.
 
-## CHOA and WCHOA corrections / choices
+Default data loss is 0.5*sqrt(mean((softmax(logits)[:,1]-y)^2)). The squared-error mean
+has a 1e-12 floor only to avoid an undefined zero-root derivative. Cross entropy is an
+optional common-objective profile via fitness=cross_entropy; it uses logits for numerical
+stability. Adam and every metaheuristic use the same selected objective plus coefficient
+1e-6 times the sum of absolute first-LSTM input and recurrent weight entries.
+Adam uses mini-batch estimates; metaheuristics score the full training cohort in eval mode.
+Dropout is disabled for fitness/inference. No validation labels enter fitness.
 
-- Leaders are selected by ascending fitness; the archived best can join them.
-  This replaces the MATLAB `fitness > Driver_score` condition starting at Inf,
-  which cannot update Driver for finite fitness. Four leaders are actually used.
-- X4 starts from Driver, not Chaser while measuring distance to Driver.
-- A=2*f*r1-f, C=2*r2 with uniform r1,r2, and f=2*(1-FE/budget).
-  This follows the basic coefficient equations; it does not reproduce the
-  MATLAB group-specific multipliers nor the alternative f curves in the note.
-  The ambiguous group assignment is not claimed resolved.
-- The Gauss map is carried between generations (one shared m per generation),
-  starting at0.7; a near-zero absorbing state resets to0.7. The published
-  `chaos(3,1,1)` instead returns0.7 every call. This is a documented correction/
-  choice, not bitwise author-code emulation.
-- WCHOA uses w_k=abs(X_k)/sum(abs(X_j)), then sum(w_k X_k), with equal weights
-  at zero denominator. This corrects repeated abs(X1) numerators and the extra
-  division by4 in the published code. Original weighted paper equations still
-  require author confirmation; this normalized interpretation is labeled here.
-- Candidates and all weights are clipped to symmetric bounds. Updating rows is
-  synchronous per generation; the archived best is preserved separately.
+The warm start uses 30 Adam epochs, then a direct search of all trainable weights/biases
+without further gradient training per candidate. This two-stage protocol is our explicit
+reconstruction. Final training has a fixed epoch count and does not use test-driven
+early stopping. Class losses remain unweighted in the primary reconstruction; class
+weighting is a possible separately predeclared sensitivity experiment.
 
-## GSOBL-CHOA reconstruction
+## Shared bounds and initialization
 
-The source corOppose path is retained in structure: first population row as
-reference, threshold f, squared coordinate-distance statistic normalized by
-N(N²−1), and opposition of selected coordinates from MATLAB row4 onward.
-Vector `size` comparisons are replaced by scalar counts. Symmetric bounds make
-the opposite coordinate -x. We explicitly evaluate and greedily accept an
-improving opposite, then evaluate the weighted chimp proposal and greedily
-retain the better candidate. This acceptance/extra FE is a reconstruction of
-the described greedy step, not the unchanged public code. Because the published
-corOppose formula uses N, not rank correlation of fitness, we do not relabel it
-as a statistically valid Spearman coefficient. The source `upper/lower` expansion
-does not alter fixed bounds when proposals are clamped; fixed bounds are used.
+A common warm checkpoint is used per split/seed/sequence mode. Row zero is copied exactly.
+Requested symmetric bounds start at [-1,1]. With weight_bound_policy=expand_to_initial,
+the effective absolute bound is max(requested bound, nextafter(max(abs(warm)),+inf)) when
+necessary. All methods derive the same effective bound from the same warm vector.
+The bound and out-of-requested-range count are recorded. policy=error instead stops
+before population creation. The baseline is never silently clipped.
 
-## TAR-CHOA reconstruction and unresolved contradictions
+Remaining agents use clipped warm_normal perturbations with std=.01. Uniform initialization
+remains available. All searches use disk-backed float32 vectors at the full parameter dimension.
 
-Eqs14–15 are parsed as:
+## CHOA group dynamics and chaotic-position branch
 
-    exponent = 1 - tan((r - 1/2) * pi * theta / max_FE)
-    lambda1 = (1 - FE/max_FE)^exponent
-    lambda2 = (2 - 2*FE/max_FE)^exponent
+Four leader vectors are selected by stable ascending fitness, including the archived best.
+The driver proposal is based on the driver. These correct obvious source-code mistakes.
+Agents are assigned once to four balanced shuffled groups using their optimizer RNG;
+group assignments are checkpointed. Coefficients follow four ChOA2-inspired curves.
+For q=committed_FE/budget, B=budget, the endpoint-normalized schedules are:
 
-The equations' values do not always match the prose ranges [0,1] and [0.5,1].
-Default `tar_lambda_policy=literal` follows the printed expression, with numerical
-clamps only: exponent[-20,20], log-result[-40,40], base>=1e-12 and q<1. Optional
-`stated_ranges` clips to the prose ranges, and changes the experiment fingerprint.
-Neither interpretation is claimed confirmed by the author.
+```text
+f1(q) = 2.5 * (1 - log(1 + (B-1)*q)/log(B))
+f2(q) = 2.5 * (1 - q^3)
+f3(q) = 2.5 * (exp(-16*q^2) - exp(-16)) / (1 - exp(-16))
+f4(q) = 2.5 * (1-q)^2
+```
 
-Fig6 stochastic alternative: independently select coordinates when
-tan(pi*(r-.5)) < 1-FE/max_FE, replace selected values uniformly within bounds,
-evaluate and greedily retain. The replacement distribution is unspecified and
-uniform is an explicit choice. We then evaluate the unweighted and both weighted
-chimp proposals; the first half uses lambda1 for acceptance, the second lambda2.
-Random coefficients are independently sampled for the proposals. Every actual
-fitness call counts, including rejected/inactive proposals, and the best evaluated
-vector is archived. No candidate is evaluated after the configured budget.
-Theta starts at1 per agent, increments by1 if the accepted agent does not improve,
-and halves otherwise. The units, initialization and increment are unspecified in
-the paper. Symbols kappa,J,beta,zeta in Fig6 are not independently defined in the
-supplied method; no invented hidden mechanism is attributed to the authors.
+These retain the source table's logarithmic/cubic/exponential/quadratic shapes while
+removing its terminal .5 floor to obtain the base article's stated 2.5-to-zero range.
+Endpoint normalization and FE-based progress are our declared choices, not exact author code.
 
-TAR's300k FE and other methods'50k FE cannot support claims of superiority at
-equal compute. A matched50k configuration is included for a separate sensitivity
-experiment; it does not replace the main300k setting.
+The normal four-leader proposals use A=2*f*r1-f, C=2*r2, and
+lambda*leader-A*abs(C*leader-m*x), averaged across leaders for CHOA/TAR.
+The scalar distance-map m follows a carried Gauss map, with a deterministic restart
+at .7 for a finite-precision near-zero state.
 
-## ARGA / ARWOA
+With probability .5 a candidate instead uses a chaotic-position branch (base Eq.7).
+Each coordinate begins with an independent reproducible seed in (0,1), receives three
+vectorized Gauss-map iterations, then maps to [-bound,bound].
+Coordinatewise seeded iterations avoid broadcasting one scalar to millions of weights.
+The map initialization/iteration count are explicit implementation choices.
+The branch, groups, leader selection and RNG are identical mechanisms across CHOA variants.
 
-No verified definition is available. No functions named ARGA or ARWOA are shipped.
-Optional GA_reference and WOA_reference are transparent added comparators:
-GA uses 3-way tournament, arithmetic crossover, independent Gaussian coordinate
-mutation and greedy survivor selection. WOA uses the standard encircling/random
-search/spiral update. Neither is a substitute that may be labeled ARGA/ARWOA in
-the thesis. Their inclusion requires the separate config to be selected before
-starting an experiment. ARGA/ARWOA rows should be marked unavailable, not fabricated.
+## WCHOA
 
-## Computational fidelity and checkpoints
+Normal updates use normalized magnitude weights w_k=abs(X_k)/sum_j(abs(X_j));
+a zero denominator receives equal weights. The result is sum_k(w_k*X_k) without
+an additional division by four. This removes duplicated abs(X1) numerators in the
+supplied MATLAB code and gives a well-defined weighted combination. We document this
+as the reconstructed weighted operator, not a claim of exact source identity.
+The same chaotic-position branch applies.
 
-Full widths/populations/budgets remain in final.json. Disk-backed float32 vectors
-and chunkwise arithmetic change storage, not dimensions. Population buffers are
-transactional across generations: a crash resumes the last committed generation
-and may replay the partial generation. physical_evaluations.jsonl records completed
-calls including replay; committed FE drives the algorithm. A crash exactly between
-returning fitness and writing the ledger can leave one completed call unlogged.
-Epoch checkpoints include Adam and RNG states. CUDA reproducibility across
-different hardware/PyTorch versions is not guaranteed. Do not edit configuration
-or code mid-experiment: fingerprints reject mixed runs.
+## Reconstructed GSOBL-CHOA
 
-Reference technical documentation:
-- https://docs.pytorch.org/docs/stable/generated/torch.nn.LSTM.html
-- https://docs.pytorch.org/docs/stable/generated/torch.nn.utils.rnn.pack_padded_sequence.html
-- https://www.tensorflow.org/guide/keras/understanding_masking_and_padding
+The old population-normalized coordinate-distance gate was removed. It could make
+opposition impossible for many combinations of population and vector dimension.
+Each generation selects the weakest ceil(N/2) agents using stable fitness ranking.
+For these agents, standard opposition x_opp=L+U-x (here -x for symmetric bounds)
+is evaluated and accepted only if it improves that agent. A subsequent weighted chimp
+proposal is also evaluated if FE budget remains and retained only if better.
+Attempts, accepted oppositions and vector changes are logged.
+
+Weakest-half selection is an agreed reconstruction choice. It is not attributed to the
+original authors as an exact equation and is labeled reconstructed GSOBL-CHOA in the
+research description. It preserves the chosen combination of weighting, opposition
+and greedy acceptance without a dimension-dependent inactive gate.
+
+## TAR-CHOA phases
+
+Eqs14-15 use the literal exponent:
+1-tan((r-.5)*pi*theta/max_FE). Numerical clamps prevent overflow; optional stated_ranges
+is a distinct declared policy. The printed expressions disagree with the prose ranges,
+so literal is the primary documented interpretation.
+
+Per agent: evaluate the stochastic alternative and greedily retain it; evaluate the base
+chimp proposal; determine the CURRENT FE fraction immediately before the weighted proposal;
+evaluate only lambda1 for q<.5, otherwise lambda2. Choose the best eligible incumbent/base/
+active-weighted proposal. An inactive lambda proposal is neither evaluated nor archived.
+The archived best can therefore no longer bypass phase restrictions. No call exceeds the
+committed FE budget. A budget ending mid-agent retains the best eligible evaluated option.
+
+Stochastic alternative coordinate selection uses tan(pi*(r-.5)) < 1-q with uniform bounded
+replacement, an explicit choice where distribution is unspecified. Theta starts at one
+per agent, halves on strict improvement of that agent and increments by one otherwise.
+TAR normally consumes up to three FEs per agent update, versus the previous four-proposal
+implementation. Every actual call, including replay after interruption, is logged.
+
+## GA, WOA and the majority baseline
+
+GA is a real-coded genetic algorithm: three-way tournament parent selection, per-coordinate
+arithmetic crossover, Gaussian coordinate mutation (probability .01, std .02), greedy
+survivor selection and best archive. WOA uses its standard encircling/random-search/spiral
+operators, A=2*a*r-a, C=2*r, a=2*(1-q), spiral b=1 and l in [-1,1].
+They search the same full weight vector with common warm start, objective, bounds and FE budget.
+
+GA and WOA are primary comparators under their actual names. GA_reference and WOA_reference
+remain accepted API aliases only. We do not relabel these methods as ARGA/ARWOA, whose
+definitions are not established by the base paper. The substitution is stated in the thesis.
+
+MajorityClass fits only training-label counts; ties select class zero. It predicts that
+class for every evaluation sample. On this dataset the majority is profitable.
+LR retains its fixed 34 window summaries, train-only scaling and C=1.
+
+## Fair comparison and threshold selection
+
+Default/final/matched profiles allocate 50,000 FEs to each of the six metaheuristics.
+TAR's 300,000-FE paper setting is a separate paper_budget sensitivity profile.
+FEs include population initialization and all additional opposition/TAR proposals.
+Equal FEs do not imply equal wall-clock cost.
+
+Thresholds maximize development OOF seed-ensemble Balanced Accuracy over every achievable
+decision boundary. Equal probabilities move together. BA ties prefer the attainable
+threshold nearest .5, then the lower threshold. The p>=threshold convention is preserved;
+nextafter(1,+inf) is a finite sentinel for an all-negative decision when p=1 occurs.
+No test labels set thresholds. Sequence selection remains based on mean validation
+fold/seed BA at .5, with a full-year tie break.
+
+## Reporting, persistence and limits
+
+Metrics include class-specific loss precision/recall/F1 and loss-positive average precision
+in addition to primary BA, profit-class metrics, macro F1, AUC, Brier and log loss.
+Plots distinguish profit-positive and loss-positive PR curves.
+Company-cluster bootstrap, paired model-swap randomization and Holm adjustment are retained.
+Seeds are not independent company-year samples; previously examined test years remain
+a controlled reanalysis of that period.
+
+Epoch checkpoints contain Adam and Python/NumPy/Torch/CUDA RNG state. Alternating population
+slots checkpoint groups, theta, Gauss state, RNG, counters and best vector each generation.
+Memory maps are explicitly closed on success and exception, supporting Windows deletion.
+Cumulative timers exclude downtime; hard kills may lose time after the last checkpoint
+and are flagged on the next invocation. Physical FE logs include replayed work.
+Shared warm cost is reported separately to avoid charging it once to every hybrid.
+
+Changes in sources/data/scientific config require a new output_root. All dev profiles use
+outputs/dev_v3/... and never overwrite previous experiment roots. GPU reproducibility
+across hardware/PyTorch releases is not guaranteed. Architecture and budgets are not
+silently reduced. The benchmark measures training-only work and produces scenario
+estimates; it cannot guarantee a full-population completion time.
+
+## Evidence
+
+Base article: Tang, Yang & Khishe (2023), Heliyon e19431,
+https://doi.org/10.1016/j.heliyon.2023.e19431 .
+Author archives in vendor are unchanged. CHOA group shapes also follow the supplied
+Brief_Mathematical_Model.pdf inside ChOA-V2.zip. See Sources.md for publication/release links.

@@ -1,7 +1,8 @@
 {
-  "edition": "MAIN",
-  "training_executed_this_turn": false,
-  "inspection": "configuration, notebook syntax, archive contents only",
-  "base": "DLSTM_Thesis_GPU_v1.zip",
-  "note": "Scientific implementation unchanged; separate defaults and diagnostic data subset."
+  "edition": "DEV_V3",
+  "branch": "dev",
+  "final_gpu_training_executed": false,
+  "native_windows_gpu_benchmark_executed": false,
+  "validation": "See docs/Dev_Validation.md",
+  "note": "Independent reconstruction; primary equal-FE comparison; final settings pending server benchmark."
 }

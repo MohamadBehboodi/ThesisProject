@@ -1,31 +1,39 @@
 [
   {
     "path": ".gitignore",
-    "sha256": "796fd8e54ba4a2e43aa9429fb698a28b3525600308da2b7494977c71f43c3280"
+    "sha256": "4b2caadbb12dd353a05a64ea74ff9ab1a851dccde8f86e872aed83d71a6f859b"
   },
   {
     "path": "Readme.md",
-    "sha256": "6f3fb3821127719f15fb291091db23c2f2230a769a952cd2178720daeb6966d7"
+    "sha256": "4dac3a451cf143d3ce30debf9069db1fbb1a4e7e2c78f2a32ec24a14fb014548"
+  },
+  {
+    "path": "configs/benchmark.json",
+    "sha256": "d84037308ae762b9f5abb12327b369aca9a872122ec4183e283587784ddb6469"
   },
   {
     "path": "configs/default.json",
-    "sha256": "faba9c8ba7a72cc3616c2d8890a3764530a65a2ffe953eb7eb144dc18a48fc8f"
+    "sha256": "168abe8afa7d8ede6e513fc20e3f93b02a8a3dda4848df6eb7d026806130b0d3"
   },
   {
     "path": "configs/final.json",
-    "sha256": "3c1ebcab3d8395f73d1887179b144ce30af0e5e596a6da691bfb4a21848976bd"
+    "sha256": "eeb2c5bc41c37787ec999c9cc8c6413215647af090ba807e20199e7d77d2e219"
   },
   {
     "path": "configs/matched_budget.json",
-    "sha256": "42c2a420264e613fdffccb44096e527ebdc5f45ada11ea5836887adf721a2ac8"
+    "sha256": "ba7430c8406ec2e348b5063879c144fd75c53303f359ee5b83e968b4f68cef36"
+  },
+  {
+    "path": "configs/paper_budget.json",
+    "sha256": "df65d46f038dd7a92b85ca9eade91ab459320f6176a53fdf12f82757321c1e83"
   },
   {
     "path": "configs/smoke.json",
-    "sha256": "c894fb52158b91a45bd87a7b563b26fd0a3f27dd86739be280bee81ece9eb900"
+    "sha256": "23e0d4ff030e17f45191d0fdc084b0eeb68ae60cc15a9b20842d65b1bcc4d038"
   },
   {
     "path": "configs/with_classical_comparators.json",
-    "sha256": "3a9d84ab4002b8f94d90b06cde48abc96c7672e8cd464a363de39aaba595071b"
+    "sha256": "9a18a496aa6047c3642aee9264c9471f2ae51c92e1fbddd19825179ef5fdcf4b"
   },
   {
     "path": "data/financial_data.csv.gz",
@@ -33,63 +41,71 @@
   },
   {
     "path": "docs/Current_Release_Status.json",
-    "sha256": "c8606fc33af0441646f0b6a06991a480b3195d91f80970283f3763377ece99d1"
+    "sha256": "b66ab7e6978d676b136f63454445ac4cb09e303ddc5e40fa8cf96e02be008674"
   },
   {
-    "path": "docs/Method_Decisions.md",
-    "sha256": "c925323dd514a7c4190528b82264c8a1729e6cc74cbf9b4817b6442c094e3ec8"
+    "path": "docs/Dev_Changes.md",
+    "sha256": "a659dc5aecdebb238e26057499f1c95b00e6a58ae05631417ba139f654737ab2"
+  },
+  {
+    "path": "docs/Dev_Validation.md",
+    "sha256": "b0175ed3e2698e4cb52f74b2a74285a1549e49edb6a1ac06b8c948fd933dd43d"
   },
   {
     "path": "docs/Guide_Detailed.md",
-    "sha256": "a95681d6623ad4830f4f30b65e1e1103eb3e74c52e0a551d4171b0e0595bf52d"
+    "sha256": "f3a2e43fa41c94aad2a9c2f327a4a39d7d1eab41008b009ce75b2cf4aaa1285c"
+  },
+  {
+    "path": "docs/Method_Decisions.md",
+    "sha256": "8d7eedf1d23291e72b6853cc10386c0090243cbf7ee53e6345ab04390b733dc3"
   },
   {
     "path": "docs/Sources.md",
-    "sha256": "0fd3c12f38f620620345f4e6960b8091c7b0e792b296cb3bbf1d412784176c09"
+    "sha256": "c5bd3c38490d04e2acebb26edfa4a95b5b2e190e6bf6e579ffed2c5473170e2a"
   },
   {
     "path": "notebooks/00_Environment_Data.ipynb",
-    "sha256": "c1be840ce55a05aa4b7199acd61085a5377366e5e8d7e28db399b2772ee4cf77"
+    "sha256": "4b67169413c2d969fd7f416fdf328b4d0d144b168a4b0309e49a1c492c47515a"
   },
   {
     "path": "notebooks/01_Sequence_Selection.ipynb",
-    "sha256": "66a987f34e8c497f3e92dbe5fc717698a014f44bb89b044266b66a093683ad4a"
+    "sha256": "485521a9db0a0a0e46e03d4d031805da5554add805a5a941afbb43ca7c7a246f"
   },
   {
     "path": "notebooks/02_Baseline_Logistic.ipynb",
-    "sha256": "4d7b55e498c0d10bac7cdfb3b40e38529c83b3aa0756881815bda2e756fe4450"
+    "sha256": "efaf0c6c035403ff543f75b1b8f76017376ef63d6083013f2e841976e86697f0"
   },
   {
     "path": "notebooks/03_CHOA.ipynb",
-    "sha256": "aaabbba53a58fee88e505249a4735a2b6cfb3e98e03e0e08051f8056376e74b2"
+    "sha256": "33e7639590f536030e18538f97524c9c9def22c544902b6f82ca46a4b032fb7f"
   },
   {
     "path": "notebooks/04_WCHOA.ipynb",
-    "sha256": "422f0dfdbbcfbec309dea1ed1e6fd3d8c51d9c7de38f7b5aaf8469d352a41b0c"
+    "sha256": "613af0740703331b752db4b39fa96ddb7f949a5d0340a5e674385d930b3e0106"
   },
   {
     "path": "notebooks/05_GSOBL_CHOA.ipynb",
-    "sha256": "c6e1dd57f709984cd270773a8673abee9f25c4c91e0cb5f51f109a2bb77d11c6"
+    "sha256": "5b6db259c618899a2ad42f3a613117c6e005ab9e98b191adac5401ec5b1520ea"
   },
   {
     "path": "notebooks/06_TAR_CHOA.ipynb",
-    "sha256": "ef359d70f0ac76b8aeee985a61e5cea7f39bf4f8dd6f8962da05d0542dcaac33"
+    "sha256": "104c8a49a8d4e39970ae67268292accf7e9dcf92c0850bbf2adfcfefca863cc2"
   },
   {
-    "path": "notebooks/07_Optional_GA_WOA.ipynb",
-    "sha256": "7316cd67b025a92fda90417015cb94cf2c29c612194eabd7e719ccd3cee9022b"
+    "path": "notebooks/07_GA_WOA.ipynb",
+    "sha256": "dd7f1077bab7ce8562eb712953b6279b5b9ddb18f44baafae1399b3a75e50642"
   },
   {
     "path": "notebooks/08_Freeze_and_Final.ipynb",
-    "sha256": "bfdfe2c67dafed2bd809137525fbf2350df452c64d3514ad2866040504354110"
+    "sha256": "9f624e649e65ec4f035ef50d6ac4b94835e937dbb9b1bc8b991f1b0e183f2550"
   },
   {
     "path": "notebooks/09_Chapter4_Analysis.ipynb",
-    "sha256": "66a8b5e61d5b9f806155b99b42c486f2f6e60220ab47a768c58491f79e87dd90"
+    "sha256": "57b37b8a899aec9f2167f4b609224dad71df23a1302d5d7ae904249a0804dfd6"
   },
   {
     "path": "notebooks/10_Recover_Essential_Artifacts.ipynb",
-    "sha256": "2e49d35624e6b9c6142cba69782091da7bc2ca50794a79f99cc055ec49737459"
+    "sha256": "4bdc2d6225fdcbe69f40c25bfdb3a87f645d6e688e9df61f21606493689c73bb"
   },
   {
     "path": "requirements.txt",
@@ -97,51 +113,63 @@
   },
   {
     "path": "run.py",
-    "sha256": "f86fdc86683edb17860940f4f630b60ce9ce410e32e410ed4aeb0cd6919ff36c"
+    "sha256": "10066d4795a2f5ac9f8a46bb5a5a7e04f14286da8534fad640cb5c218466456f"
   },
   {
     "path": "tests/test_core.py",
-    "sha256": "29eb66ab44c2e7c00b5d603710c4474bb6fab273fa82de0b90189599df5cb2f5"
+    "sha256": "0dbfaafc34c3d6244a22d450f0f58b264747534b2ca59bf75596f020caac8b0f"
+  },
+  {
+    "path": "tests/test_dev.py",
+    "sha256": "a4827fb1602230fad921d4a9a6c73d197a5b058b46041355250f0e67209f4998"
   },
   {
     "path": "thesis/__init__.py",
-    "sha256": "1d272b7f35e403a03dd7ddf048d962b2af92c8835121175cfb1171ced8d843dc"
+    "sha256": "817a0baaa69684b7adf906c7169b9f98519b10e4d57430a88f693fdf9bbb2342"
   },
   {
     "path": "thesis/analysis.py",
-    "sha256": "88758f633a8f94135b1036938b739394b46eea3e22f7dcbe079f3217d0954802"
+    "sha256": "2168308e5f0e83ca87fe8eda830abb3694d05b913cf1c5b54aad29e50575ba78"
+  },
+  {
+    "path": "thesis/benchmark.py",
+    "sha256": "e8e74efcf1ac495d56d3398f914ff9847891c6bcf71e9c261729d038a69462a7"
   },
   {
     "path": "thesis/cli.py",
-    "sha256": "70bb268859d6406207830542f7e4d898aa6fe21d73c1fa19cb46c08c5273ef7b"
+    "sha256": "9b4c900214865df985b64d4d6d75b55c6344e23bb3fff321f72e2b5aed8e946d"
   },
   {
     "path": "thesis/common.py",
-    "sha256": "354152c7d2e9a34b3d2839c0b6121d898b3c4e2398190f9497ddbfac1f03ba5c"
+    "sha256": "f14839cf0b730219cc1cae1d96a2d6df765ab550020b325d36d13f923f376a60"
   },
   {
     "path": "thesis/data.py",
-    "sha256": "6c24608f2b3ce27144892bf126ff662b7e41b332c4bd71d0f5d3b9ca3377979e"
+    "sha256": "3fdbcc50fc98be060857336ca7e95cc53ad48a764fedbedcdf53ec943eca0bdd"
   },
   {
     "path": "thesis/metrics.py",
-    "sha256": "0548f2eef2de0399dc3c97a08c91f2b759a3c8dfee0fcba1e5415fd351bbe280"
+    "sha256": "18e8a6852d64ad45c02460818079c8eb188b6c2f4ac0b02f0d22342140fad05e"
   },
   {
     "path": "thesis/network.py",
-    "sha256": "04042328a1a5a06e309832f3f8cd6222682373b4824d1fc36991e8883c24f7b8"
+    "sha256": "c4c95a95c9505432c584f90e1df772a8f6e7530a80b371fff80df14eaa27e5a2"
   },
   {
     "path": "thesis/optimizers.py",
-    "sha256": "dd971fe13f74ac19b9113486545d07aad16f03ca3156a8c8898d82c90a07e0b0"
+    "sha256": "4d7a814433688fa90c1cc9b468ed8cac0f25da97d2c0529a130c1829bb2a881b"
   },
   {
     "path": "thesis/pipeline.py",
-    "sha256": "d6d85959345a43bf46b0e5478125c845953a33c5f94f4e45df5949499056e747"
+    "sha256": "bd7c4cd167f3fc7b26b9771bb5e3f7598c92148a4efdabc9fcf3daffe92f2d7c"
   },
   {
     "path": "thesis/recovery.py",
-    "sha256": "c5019cbb377b04bbcba078dafa3c1c6d488256cdce379bfd0127bdacbe872fa2"
+    "sha256": "1582fb98d27e392f58ffc712a9c6e573b3056878d391a03a9cbe6a2cdc26f8eb"
+  },
+  {
+    "path": "thesis/resources.py",
+    "sha256": "69b8d8346a4ddd9909a3a585a3e687186d09c26c1d2c4278c8b8026e023ed504"
   },
   {
     "path": "vendor/ChOA-V2.zip",
