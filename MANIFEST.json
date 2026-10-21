@@ -5,11 +5,15 @@
   },
   {
     "path": "Readme.md",
-    "sha256": "4dac3a451cf143d3ce30debf9069db1fbb1a4e7e2c78f2a32ec24a14fb014548"
+    "sha256": "cc7c2271be84dd6cc70f36a4d9c1d8e0576e89af21f6ab24c465ac5a39f29434"
   },
   {
     "path": "configs/benchmark.json",
     "sha256": "d84037308ae762b9f5abb12327b369aca9a872122ec4183e283587784ddb6469"
+  },
+  {
+    "path": "configs/benchmark_compact.json",
+    "sha256": "c9c80987cd5cddbebd1c1b0c08a9b19cf3ae79502fee85f5bb9663c273609877"
   },
   {
     "path": "configs/default.json",
@@ -58,6 +62,10 @@
   {
     "path": "docs/Method_Decisions.md",
     "sha256": "8d7eedf1d23291e72b6853cc10386c0090243cbf7ee53e6345ab04390b733dc3"
+  },
+  {
+    "path": "docs/Server_Benchmark_Review.md",
+    "sha256": "80b1d057e86f7e1f9f9cd5d7382f5aff2e14864e4ad943b186b38cbf3bb6ddd7"
   },
   {
     "path": "docs/Sources.md",

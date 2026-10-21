@@ -25,6 +25,19 @@ no third-party runtime dependency. See requirements.txt for the supported versio
 
 ## Run the limited server benchmark first
 
+The first server benchmark completed, but its large-model schedule spans several
+continuous years. See [the review and next diagnostic](docs/Server_Benchmark_Review.md).
+The next measurement uses the separate candidate profile:
+
+```powershell
+python -u run.py benchmark --config configs/benchmark_compact.json
+```
+
+This measures a proposed [256,128,64,30] network with batch size 32. Its runtime
+scenarios use population 30 and 1,000 FEs per method/split/seed. These settings are
+for calibration pending review; no new final profile is selected. The original
+large-architecture diagnostic remains available below.
+
 ```powershell
 python -u run.py benchmark --config configs/benchmark.json 2>&1 | Tee-Object -FilePath benchmark.log
 ```
@@ -56,6 +69,7 @@ must be on the output volume. It does not pool free space across SSDs.
 |---|---|
 | configs/default.json | Canonical dev profile; all comparators; equal 50,000 FE budgets |
 | configs/benchmark.json | Same large architecture/settings, bounded diagnostic work |
+| configs/benchmark_compact.json | Proposed compact calibration; final settings pending its server timings |
 | configs/smoke.json | CPU execution check only; tiny network; not thesis results |
 | configs/final.json | Separate final-candidate output root; same matched scientific settings |
 | configs/matched_budget.json | Explicit matched-budget profile |
