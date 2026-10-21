@@ -1,0 +1,9 @@
+# Sources and provenance
+
+- Base study: Tang, Yang & Khishe (2023), Profit prediction optimization using financial accounting information system by optimized DLSTM. Heliyon e19431. https://doi.org/10.1016/j.heliyon.2023.e19431 . Supplied PDF: vendor/Heliyon_2023_e19431.pdf.
+- CHOA: Khishe & Mosavi (2020), Expert Systems with Applications149,113338. https://doi.org/10.1016/j.eswa.2020.113338 . Author release: https://www.mathworks.com/matlabcentral/fileexchange/76763-chimp-optimization-algorithm . Original archive and license under vendor/ChOA-V2.zip.
+- WCHOA: A Weighted Chimp Optimization Algorithm (2021). https://doi.org/10.1109/ACCESS.2021.3130933 . Author release: https://www.mathworks.com/matlabcentral/fileexchange/99344-a-weighted-chimp-optimization-algorithm . Original archive and license under vendor/WChOA.zip.
+- GSOBL-ChOA: Bo, Cheng & Khishe, Evolving Chimp Optimization Algorithm by Weighted Opposition-Based Technique and Greedy Search for Multimodal Engineering Problems. https://doi.org/10.1016/j.asoc.2022.109869 . Author release: https://www.mathworks.com/matlabcentral/fileexchange/119108-evolving-chimp-optimization-algorithm-by-weighted-opposition . Original archive and license under vendor/GSOBL-ChOA.zip.
+- Optional WOA_reference: Mirjalili & Lewis (2016), The Whale Optimization Algorithm. https://doi.org/10.1016/j.advengsoft.2016.01.008 . Author source description: https://se.mathworks.com/matlabcentral/fileexchange/55667-the-whale-optimization-algorithm . This package independently implements the basic operators; it does not contain that downloaded archive and does not establish identity with ARWOA.
+
+The new Python files are an independent implementation informed by these sources. Original vendor archives, copyright statements and licenses remain unchanged. See Method_Decisions.md for every material methodological interpretation.

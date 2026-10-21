@@ -1,0 +1,162 @@
+[
+  {
+    "path": ".gitignore",
+    "sha256": "796fd8e54ba4a2e43aa9429fb698a28b3525600308da2b7494977c71f43c3280"
+  },
+  {
+    "path": "Readme.md",
+    "sha256": "6f3fb3821127719f15fb291091db23c2f2230a769a952cd2178720daeb6966d7"
+  },
+  {
+    "path": "configs/default.json",
+    "sha256": "faba9c8ba7a72cc3616c2d8890a3764530a65a2ffe953eb7eb144dc18a48fc8f"
+  },
+  {
+    "path": "configs/final.json",
+    "sha256": "3c1ebcab3d8395f73d1887179b144ce30af0e5e596a6da691bfb4a21848976bd"
+  },
+  {
+    "path": "configs/matched_budget.json",
+    "sha256": "42c2a420264e613fdffccb44096e527ebdc5f45ada11ea5836887adf721a2ac8"
+  },
+  {
+    "path": "configs/smoke.json",
+    "sha256": "c894fb52158b91a45bd87a7b563b26fd0a3f27dd86739be280bee81ece9eb900"
+  },
+  {
+    "path": "configs/with_classical_comparators.json",
+    "sha256": "3a9d84ab4002b8f94d90b06cde48abc96c7672e8cd464a363de39aaba595071b"
+  },
+  {
+    "path": "data/financial_data.csv.gz",
+    "sha256": "fb56a761cca7b2938cd7a06daf39ed3e3c145ca5c0a5b50b4ca0249d6f9e9fa7"
+  },
+  {
+    "path": "docs/Current_Release_Status.json",
+    "sha256": "c8606fc33af0441646f0b6a06991a480b3195d91f80970283f3763377ece99d1"
+  },
+  {
+    "path": "docs/Method_Decisions.md",
+    "sha256": "c925323dd514a7c4190528b82264c8a1729e6cc74cbf9b4817b6442c094e3ec8"
+  },
+  {
+    "path": "docs/Guide_Detailed.md",
+    "sha256": "a95681d6623ad4830f4f30b65e1e1103eb3e74c52e0a551d4171b0e0595bf52d"
+  },
+  {
+    "path": "docs/Sources.md",
+    "sha256": "0fd3c12f38f620620345f4e6960b8091c7b0e792b296cb3bbf1d412784176c09"
+  },
+  {
+    "path": "notebooks/00_Environment_Data.ipynb",
+    "sha256": "c1be840ce55a05aa4b7199acd61085a5377366e5e8d7e28db399b2772ee4cf77"
+  },
+  {
+    "path": "notebooks/01_Sequence_Selection.ipynb",
+    "sha256": "66a987f34e8c497f3e92dbe5fc717698a014f44bb89b044266b66a093683ad4a"
+  },
+  {
+    "path": "notebooks/02_Baseline_Logistic.ipynb",
+    "sha256": "4d7b55e498c0d10bac7cdfb3b40e38529c83b3aa0756881815bda2e756fe4450"
+  },
+  {
+    "path": "notebooks/03_CHOA.ipynb",
+    "sha256": "aaabbba53a58fee88e505249a4735a2b6cfb3e98e03e0e08051f8056376e74b2"
+  },
+  {
+    "path": "notebooks/04_WCHOA.ipynb",
+    "sha256": "422f0dfdbbcfbec309dea1ed1e6fd3d8c51d9c7de38f7b5aaf8469d352a41b0c"
+  },
+  {
+    "path": "notebooks/05_GSOBL_CHOA.ipynb",
+    "sha256": "c6e1dd57f709984cd270773a8673abee9f25c4c91e0cb5f51f109a2bb77d11c6"
+  },
+  {
+    "path": "notebooks/06_TAR_CHOA.ipynb",
+    "sha256": "ef359d70f0ac76b8aeee985a61e5cea7f39bf4f8dd6f8962da05d0542dcaac33"
+  },
+  {
+    "path": "notebooks/07_Optional_GA_WOA.ipynb",
+    "sha256": "7316cd67b025a92fda90417015cb94cf2c29c612194eabd7e719ccd3cee9022b"
+  },
+  {
+    "path": "notebooks/08_Freeze_and_Final.ipynb",
+    "sha256": "bfdfe2c67dafed2bd809137525fbf2350df452c64d3514ad2866040504354110"
+  },
+  {
+    "path": "notebooks/09_Chapter4_Analysis.ipynb",
+    "sha256": "66a8b5e61d5b9f806155b99b42c486f2f6e60220ab47a768c58491f79e87dd90"
+  },
+  {
+    "path": "notebooks/10_Recover_Essential_Artifacts.ipynb",
+    "sha256": "2e49d35624e6b9c6142cba69782091da7bc2ca50794a79f99cc055ec49737459"
+  },
+  {
+    "path": "requirements.txt",
+    "sha256": "4db43ee64391c112e01845f7c40e1d7d91028d133b1cbf52c5d3e38aa5012056"
+  },
+  {
+    "path": "run.py",
+    "sha256": "f86fdc86683edb17860940f4f630b60ce9ce410e32e410ed4aeb0cd6919ff36c"
+  },
+  {
+    "path": "tests/test_core.py",
+    "sha256": "29eb66ab44c2e7c00b5d603710c4474bb6fab273fa82de0b90189599df5cb2f5"
+  },
+  {
+    "path": "thesis/__init__.py",
+    "sha256": "1d272b7f35e403a03dd7ddf048d962b2af92c8835121175cfb1171ced8d843dc"
+  },
+  {
+    "path": "thesis/analysis.py",
+    "sha256": "88758f633a8f94135b1036938b739394b46eea3e22f7dcbe079f3217d0954802"
+  },
+  {
+    "path": "thesis/cli.py",
+    "sha256": "70bb268859d6406207830542f7e4d898aa6fe21d73c1fa19cb46c08c5273ef7b"
+  },
+  {
+    "path": "thesis/common.py",
+    "sha256": "354152c7d2e9a34b3d2839c0b6121d898b3c4e2398190f9497ddbfac1f03ba5c"
+  },
+  {
+    "path": "thesis/data.py",
+    "sha256": "6c24608f2b3ce27144892bf126ff662b7e41b332c4bd71d0f5d3b9ca3377979e"
+  },
+  {
+    "path": "thesis/metrics.py",
+    "sha256": "0548f2eef2de0399dc3c97a08c91f2b759a3c8dfee0fcba1e5415fd351bbe280"
+  },
+  {
+    "path": "thesis/network.py",
+    "sha256": "04042328a1a5a06e309832f3f8cd6222682373b4824d1fc36991e8883c24f7b8"
+  },
+  {
+    "path": "thesis/optimizers.py",
+    "sha256": "dd971fe13f74ac19b9113486545d07aad16f03ca3156a8c8898d82c90a07e0b0"
+  },
+  {
+    "path": "thesis/pipeline.py",
+    "sha256": "d6d85959345a43bf46b0e5478125c845953a33c5f94f4e45df5949499056e747"
+  },
+  {
+    "path": "thesis/recovery.py",
+    "sha256": "c5019cbb377b04bbcba078dafa3c1c6d488256cdce379bfd0127bdacbe872fa2"
+  },
+  {
+    "path": "vendor/ChOA-V2.zip",
+    "sha256": "5be9cb6dcc41db039e59d6f7fc097f9359b1eb5678705ac9e754c6d0f7495e2f"
+  },
+  {
+    "path": "vendor/GSOBL-ChOA.zip",
+    "sha256": "52e4fbeb675543efe00a07befb5fa9c7c46d387f945eaec16317bdfbdfa37f92"
+  },
+  {
+    "path": "vendor/Heliyon_2023_e19431.pdf",
+    "sha256": "9b46dc889b638e095fab5eb9f0f04afe24270180ef5050d8253fde3faccf6068"
+  },
+  {
+    "path": "vendor/WChOA.zip",
+    "sha256": "a91fa4ade3c9a5fa821afacf18d96f5fcfedf37b859bc1707dd92669cc0a3cf9"
+  }
+]

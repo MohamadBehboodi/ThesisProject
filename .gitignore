@@ -1,0 +1,6 @@
+outputs/
+.venv/
+.venv-gpu/
+__pycache__/
+.ipynb_checkpoints/
+*.log

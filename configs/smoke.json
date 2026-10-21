@@ -1,0 +1,56 @@
+{
+  "experiment_name": "SMOKE_NOT_THESIS_RESULTS",
+  "data_path": "data/financial_data.csv.gz",
+  "output_root": "outputs/smoke",
+  "min_days": 100,
+  "start_year": 1389,
+  "validation_years": [
+    1401
+  ],
+  "test_years": [
+    1402,
+    1403
+  ],
+  "label_gap_years": 1,
+  "sequence_modes": [
+    "full_year",
+    "last100"
+  ],
+  "seeds": [
+    17
+  ],
+  "hidden_widths": [
+    8,
+    6,
+    4,
+    3
+  ],
+  "dropout": 0.1,
+  "epochs": 1,
+  "batch_size": 32,
+  "learning_rate": 0.001,
+  "l1_coefficient": 1e-06,
+  "gradient_clip": 1.0,
+  "fitness": "half_rmse",
+  "population": 4,
+  "evaluations": 8,
+  "tar_evaluations": 20,
+  "weight_bound": 1.0,
+  "population_initialization": "warm_normal",
+  "initial_std": 0.01,
+  "vector_chunk": 262144,
+  "tar_lambda_policy": "literal",
+  "ga_mutation_probability": 0.01,
+  "ga_mutation_std": 0.02,
+  "models": [
+    "DLSTM",
+    "LogisticRegression",
+    "CHOA",
+    "WCHOA",
+    "GSOBL_CHOA",
+    "TAR_CHOA"
+  ],
+  "device": "cpu",
+  "bootstrap_repeats": 50,
+  "retain_populations": false
+}
