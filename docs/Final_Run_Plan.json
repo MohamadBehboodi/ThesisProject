@@ -1,0 +1,147 @@
+{
+  "edition": "FINAL_V4",
+  "date": "2026-10-21",
+  "canonical_config": "configs/final.json",
+  "identical_aliases": [
+    "configs/default.json",
+    "configs/matched_budget.json",
+    "configs/with_classical_comparators.json"
+  ],
+  "selection_basis": "Training-only server cost/memory measurements and the user-authorized few-day compute allowance; no held-out performance used.",
+  "calibration": {
+    "git_commit": "df918fad595f25a639f7dd7c8f26e085981fce53",
+    "benchmark_json_sha256": "6c5cf7726636570aa2b4c1fdbe05ba0d6870730985f2b1dd0741385733372a06",
+    "status": "completed",
+    "measured_FE_budget": 1000,
+    "measured_hidden_widths": [
+      256,
+      128,
+      64,
+      30
+    ],
+    "measured_batch_size": 32,
+    "measured_training_peak_GiB": 0.19367074966430664,
+    "gpu": "NVIDIA GeForce RTX 3080",
+    "gpu_dedicated_bytes": 10736893952
+  },
+  "settings": {
+    "hidden_widths": [
+      256,
+      128,
+      64,
+      30
+    ],
+    "batch_size": 32,
+    "epochs": 30,
+    "population": 30,
+    "evaluations": 5000,
+    "tar_evaluations": 5000,
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "validation_years": [
+      1396,
+      1397,
+      1398,
+      1399,
+      1400,
+      1401
+    ],
+    "test_years": [
+      1402,
+      1403
+    ],
+    "sequence_modes": [
+      "full_year",
+      "last100"
+    ],
+    "models": [
+      "DLSTM",
+      "LogisticRegression",
+      "MajorityClass",
+      "CHOA",
+      "WCHOA",
+      "GSOBL_CHOA",
+      "TAR_CHOA",
+      "GA",
+      "WOA"
+    ]
+  },
+  "resources": {
+    "trainable_parameters": 531932,
+    "one_vector_bytes": 2127728,
+    "one_vector_GiB": 0.001981601119041443,
+    "hidden_widths": [
+      256,
+      128,
+      64,
+      30
+    ],
+    "population": 30,
+    "two_population_buffers_GiB": 0.11889606714248657,
+    "shared_warm_training_runs": 39,
+    "saved_neural_models": 165,
+    "projected_retained_weights_GiB": 0.5588115155696869,
+    "estimated_peak_disk_GiB": 0.6895971894264221,
+    "adam_static_memory_GiB": 0.007926404476165771,
+    "hybrid_FE_by_optimizer": {
+      "CHOA": 105000,
+      "WCHOA": 105000,
+      "GSOBL_CHOA": 105000,
+      "TAR_CHOA": 105000,
+      "GA": 105000,
+      "WOA": 105000
+    },
+    "total_hybrid_FE": 630000,
+    "epochs": 30,
+    "other_FE": 5000,
+    "TAR_FE": 5000,
+    "equal_FE_budget": true
+  },
+  "timing_scenarios": [
+    {
+      "chosen_sequence_scenario": "full_year",
+      "hybrid_FE": {
+        "CHOA": 105000,
+        "WCHOA": 105000,
+        "GSOBL_CHOA": 105000,
+        "TAR_CHOA": 105000,
+        "GA": 105000,
+        "WOA": 105000
+      },
+      "estimated_total_hours_scenario_low": 58.106547961236714,
+      "estimated_total_hours_scenario_high": 78.3585737443074,
+      "estimated_warm_training_hours_conservative": 0.20853966745562502,
+      "interpretation": "Measured-rate scenarios, not a confidence interval or completion guarantee."
+    },
+    {
+      "chosen_sequence_scenario": "last100",
+      "hybrid_FE": {
+        "CHOA": 105000,
+        "WCHOA": 105000,
+        "GSOBL_CHOA": 105000,
+        "TAR_CHOA": 105000,
+        "GA": 105000,
+        "WOA": 105000
+      },
+      "estimated_total_hours_scenario_low": 32.600345878117835,
+      "estimated_total_hours_scenario_high": 48.68345123592549,
+      "estimated_warm_training_hours_conservative": 0.19669403246116418,
+      "interpretation": "Measured-rate scenarios, not a confidence interval or completion guarantee."
+    }
+  ],
+  "planning_allowance_days": [
+    3,
+    5
+  ],
+  "limitations": [
+    "Timing scenarios extrapolate measured training/host rates to 5000 FEs; they are not completion guarantees.",
+    "The complete 5000-FE schedule has not yet run on the Windows server.",
+    "Budget includes initialization and all opposition/TAR calls. Interruption replay can add physical FEs.",
+    "Warm training, checkpoint I/O and host overhead are estimated; LR, majority baseline and statistical analysis time are excluded.",
+    "Architecture and budgets differ from the base paper and must be reported explicitly.",
+    "No claim of convergence, hybrid superiority or predictive accuracy follows from a timing benchmark."
+  ]
+}

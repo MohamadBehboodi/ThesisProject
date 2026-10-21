@@ -1,7 +1,8 @@
 # dev v3 change record
 
-The main branch is unchanged. Work proceeds on dev; a later merge and final run follow
-Windows server benchmark review.
+Historical record of the dev v3 implementation. Subsequent Windows benchmarks and
+the user's few-day compute allowance led to the final v4 profile; see Final_Run.md
+for the adopted architecture, budget and launch procedure.
 
 ## Agreed scope implemented
 
@@ -27,7 +28,7 @@ author source. GA/WOA are not labeled ARGA/ARWOA. The dataset and final architec
 are retained. No final CUDA training or Windows GPU timing was executed in the development
 container.
 
-## Next review
+## Original review sequence
 
 1. Switch the server to dev and run the tests/preflight.
 2. Run benchmark with configs/benchmark.json on the intended GPU/output SSD.

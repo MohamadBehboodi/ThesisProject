@@ -1,8 +1,11 @@
 {
-  "edition": "DEV_V3",
-  "branch": "dev",
+  "edition": "FINAL_V4",
+  "implementation_version": "3.0.0",
+  "release_branch": "main",
+  "development_branch": "dev",
   "final_gpu_training_executed": false,
-  "native_windows_gpu_benchmark_executed": false,
+  "native_windows_gpu_benchmark_executed": true,
   "validation": "See docs/Dev_Validation.md",
-  "note": "Independent reconstruction; primary equal-FE comparison; final settings pending server benchmark."
+  "final_plan": "See docs/Final_Run.md and docs/Final_Run_Plan.json",
+  "note": "Independent reconstruction; training-only server benchmarks reviewed; moderate measured architecture and equal 5000-FE final budgets selected under the user-authorized few-day compute allowance."
 }

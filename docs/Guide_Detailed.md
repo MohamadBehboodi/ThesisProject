@@ -1,128 +1,134 @@
-# Windows execution guide - dev v3
+# Windows execution guide - final v4
 
-## Existing environment
+## Environment and launch
 
-Use the Windows Python environment where CUDA-enabled PyTorch already works.
-Check the interpreter and device before execution:
+Use the existing environment in which both CUDA benchmarks succeeded. This release
+adds no third-party runtime dependency. Check the selected interpreter/device:
 
 ```powershell
 python -c "import sys,torch; print(sys.executable); print(torch.__version__,torch.version.cuda,torch.cuda.is_available())"
-nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv
 ```
 
-No new external runtime package was added. For a fresh environment, install a suitable
-CUDA-enabled PyTorch following https://pytorch.org/get-started/locally/ before the
-remaining requirements. Native Windows locking uses msvcrt; WSL is not required.
-
-## First steps on dev
+Update the project before starting any final work:
 
 ```powershell
 git fetch origin
-git switch dev
-git pull --ff-only origin dev
+git switch main
+git pull --ff-only origin main
 python -m unittest discover -s tests -v
-python run.py preflight --config configs/default.json
-python -u run.py benchmark --config configs/benchmark.json 2>&1 | Tee-Object -FilePath benchmark.log
+python run.py preflight --config configs/final.json
 ```
 
-Preflight checks device availability, the static Adam memory lower bound, and
-estimated output-volume capacity. It prints parameters, FEs, population buffers and
-retained-weight estimates. It cannot certify activation/workspace memory or runtime;
-the benchmark supplies those measurements. Benchmark can be run even if the full
-experiment's disk-capacity check fails, provided its own bounded workspace fits.
-
-Benchmark settings are in configs/benchmark.json:
-one warmup step, three timed steps, two full training fitness passes per case,
-two sequence modes and first/final training cohorts. Six host optimizers use four
-agents for one generation while preserving every weight dimension.
-Adjusting these diagnostic repeat counts changes benchmark work, not the main experiment.
-
-The report directory contains Benchmark_Report.md and benchmark.json. Temporary model,
-checkpoint and population buffers are removed after the benchmark. A failed/partial
-report is retained; there is no silent CPU or smaller-model fallback. If a training
-case fails, its error is recorded. Do not run a benchmark alongside another GPU job.
-
-Estimates use measured seconds per real time step, conservative longest-batch Adam
-timings and small-population host overhead. Scenario bounds are sensitivity calculations,
-not confidence intervals. A population exceeding RAM/page cache may be slower than
-the small-population extrapolation. Checkpoint load measurements are warm-cache values.
-
-## Configure one output volume
-
-Every notebook uses configs/default.json. Set data_path/output_root there or pass
---output-root to the CLI. A CLI output override is local to that command; use the same
-root for every phase of that experiment. Relative config paths are project-relative.
+After tests and preflight pass, launch the complete experiment:
 
 ```powershell
-python run.py preflight --config configs/default.json --output-root "E:\ThesisRuns\dev-v3"
+python -u run.py all --config configs/final.json 2>&1 | Tee-Object -FilePath final_v4.log -Append
 ```
 
-Use the drive letter actually available on the server. All code/data/scientific settings
-are fingerprinted. New output roots protect old runs from incompatible changes.
-A running experiment must not pull new code or modify its config.
+Use your existing persistent terminal session or keep the terminal open. Do not run
+several copies of all on the same experiment. Locks prevent conflicting writes but
+are not a parallel job scheduler. The command does not provide a background service.
 
-## Notebook order
+The current profile is [256,128,64,30], batch 32, 30 Adam epochs, population 30 and
+5,000 FEs for each of the six optimizers per split/seed. There are three seeds,
+six validation folds and nine comparison methods. See Final_Run.md for the measured
+cost basis and the adaptation relative to the base paper.
+
+## Timing, space and output volume
+
+The two uploaded server benchmarks completed. At final settings, measured-rate
+scenarios are 58.11-78.36 hours for full_year and 32.60-48.68 hours for last100. Sequence
+choice still depends on development validation. Plan for roughly 3-5 days allowing
+variation and additional work; no fixed finish time is guaranteed. Pauses are excluded
+from these active-time estimates.
+
+The static population buffers total about 121.75 MiB, and projected retained neural
+artifacts total 572.22 MiB. Prepared data, reports, logs and filesystem overhead add
+space beyond the approximately 0.69 GiB static peak. Keeping at least several GiB free
+on the destination volume is practical. Preflight checks the device, a static memory
+lower bound and estimated disk capacity; it does not resize the experiment.
+
+The canonical root is outputs/final_v4/main. All four main config aliases contain
+identical settings and this same root. Old outputs/dev_v3 paths are not reused.
+For another SSD, use the same override in every command for this experiment:
+
+```powershell
+python run.py preflight --config configs/final.json --output-root "E:\ThesisRuns\final-v4"
+python -u run.py all --config configs/final.json --output-root "E:\ThesisRuns\final-v4" 2>&1 | Tee-Object -FilePath final_v4.log -Append
+```
+
+Choose a drive letter that exists. Notebook users should instead set the desired
+output_root in the shared config before starting, and keep it fixed. Switching only
+one phase to a different root creates a different experiment directory.
+
+## Pipeline and notebooks
+
+The all action runs prepare, sequence, validate, freeze, final and analyze in order.
+It first enforces preflight. It fits scalers and objectives on training samples,
+selects sequence mode using DLSTM development folds, selects exact OOF thresholds,
+then evaluates the frozen protocol. Final test outcomes do not choose architecture,
+thresholds or budgets. No early stopping or automatic budget reduction occurs.
+
+All notebooks read configs/default.json, which is identical to final.json.
 
 | Notebook | Work |
 |---|---|
-| 00 | Environment/data; optional server benchmark cell |
-| 01 | Baseline validation for both sequence modes; development-only choice |
-| 02 | DLSTM, logistic regression and training-majority validation |
+| 00 | Environment/data; optional repeat benchmark of the current profile |
+| 01 | DLSTM validation of both sequence modes and development choice |
+| 02 | DLSTM, logistic regression and majority validation |
 | 03 | CHOA validation |
 | 04 | WCHOA validation |
 | 05 | Reconstructed GSOBL-CHOA validation |
 | 06 | TAR-CHOA validation |
-| 07 | GA and WOA validation; required main comparators |
-| 08 | Freeze OOF thresholds/protocol, then final training/evaluation |
-| 09 | Ensemble/seed/year metrics, class-specific PR, paired cluster statistics, costs |
+| 07 | GA and WOA validation |
+| 08 | Freeze thresholds/protocol, then final training/evaluation |
+| 09 | Ensemble, seed/year metrics, paired cluster statistics and costs |
 | 10 | Recover essential artifacts from saved notebook outputs |
 
-Stored outputs were cleared in the dev templates; historical outputs remain in main's
-commit history and the researcher's backups. Recovery functions remain independent.
-
-## Explicit CLI phases after benchmark review
+The CLI all command replaces manually executing notebooks 00-09. If running individual
+phases is preferred, use the same config/root for each:
 
 ```powershell
-python run.py prepare --config configs/default.json
-python -u run.py sequence --config configs/default.json
-python -u run.py validate --config configs/default.json
-python run.py freeze --config configs/default.json
-python -u run.py final --config configs/default.json
-python run.py analyze --config configs/default.json
+python run.py prepare --config configs/final.json
+python -u run.py sequence --config configs/final.json
+python -u run.py validate --config configs/final.json
+python run.py freeze --config configs/final.json
+python -u run.py final --config configs/final.json
+python run.py analyze --config configs/final.json
 ```
 
-Individual models can be validated with --models CHOA, --models GA WOA, etc.
-Use the same config and root throughout. The all action performs these phases in order
-and first enforces preflight's static checks. Running python run.py alone performs
-only preflight. The final run remains a later decision following server benchmarking
-and the dev-to-main merge.
+Do not execute notebook runs in parallel with the CLI experiment. Historical cost
+profiles benchmark.json, benchmark_compact.json and paper_budget.json are not final
+config aliases. Optional benchmarks do not produce final predictions or choose a
+protocol. With no arguments, python run.py performs preflight only.
 
-## Resume and backup
+## Resume, monitoring and backups
 
-Re-run the same action/config/root. Completed runs are skipped. Adam restores model,
+Re-run the same all command to resume. Completed runs are skipped. Adam restores model,
 optimizer and RNG state at epoch boundaries. Population search commits alternating
-disk slots at generation boundaries. A partial generation may be replayed; actual calls
-are logged in physical_evaluations.jsonl and may exceed the committed FE budget.
-Old v1/v2 checkpoints are intentionally incompatible with the changed objectives/operators.
+slots at generation boundaries. A partial generation can be replayed, so physical
+FEs may exceed the nominal committed budget after interruption. Do not delete
+population buffers for an interrupted search.
 
-timing.json and training_timing.json accumulate active work. A hard kill can lose time
-after the last progress checkpoint; the next invocation flags an uncertain previous
-session and never counts offline downtime as training.
+Console output reports Adam progress, committed FEs and best fitness. Each run saves
+config.json, metrics.json, predictions.csv, history.json, timing.json and complete.json.
+Hybrid diagnostics record warm/best fitness, changed parameter count, effective bounds,
+operator counts and TAR phase calls. The physical_evaluations.jsonl ledger records
+actual work, including replay. Timers accumulate active work and flag uncertain
+hard-kill intervals. Shared warm training is accounted for separately.
 
-Completed searches remove population buffers with retain_populations=false. Interruptions
-retain them for resume. Windows maps are explicitly closed before cleanup. Back up
-model.pt, training_state.pt, predictions, configs and protocol files on durable storage.
-Notebook capsules preserve small JSON/CSV artifacts but omit model/population weights.
+Completed searches close and remove population files with retain_populations=false.
+Back up model.pt, training_state.pt, predictions, protocol files and the selected config
+on durable storage. Capsules in logs/notebook outputs preserve small JSON/CSV evidence,
+but omit neural weights and population buffers. Source, scientific config and dataset
+changes require a fresh output root; do not update code/config during the final run.
 
-## Outputs
+## Final deliverables
 
-Each run saves predictions.csv, metrics.json, config.json, scaler.json, sample_ids.json,
-history.json and complete.json. Neural runs save model.pt; LR saves model.joblib;
-MajorityClass saves majority_model.json. Hybrid diagnostics.json includes bounds,
-warm/best fitness, changed parameter count, distance, opposition counters and TAR phases.
-
-Analysis includes model_comparison.csv, seed_metrics.csv, per-year metrics,
-compute_costs.csv, shared_warm_training_costs.json, experiment_budget.json,
-paired_comparisons.csv and diagnostic plots. Shared warm-training costs are reported
-once separately from method-specific search time. Seeds are computational repetitions,
-not additional independent company-years.
+The analysis folder contains model_comparison.csv, seed_metrics.csv,
+paired_comparisons.csv, compute_costs.csv, experiment_budget.json,
+shared_warm_training_costs.json, per-year metrics and diagnostic plots. Report both
+profit-positive and loss-positive metrics. Compare hybrids with the shared DLSTM,
+logistic and majority baselines. Record architecture/budget deviations from the base
+article. Identical warm/best weights or absent improvement are valid findings to
+report, not reasons to change the held-out protocol.

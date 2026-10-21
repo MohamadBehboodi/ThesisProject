@@ -5,7 +5,7 @@
   },
   {
     "path": "Readme.md",
-    "sha256": "cc7c2271be84dd6cc70f36a4d9c1d8e0576e89af21f6ab24c465ac5a39f29434"
+    "sha256": "6e5e5909daf89cdce222271a7a92fa16ce3eadc7c034069ec305afdd2a021645"
   },
   {
     "path": "configs/benchmark.json",
@@ -17,15 +17,15 @@
   },
   {
     "path": "configs/default.json",
-    "sha256": "168abe8afa7d8ede6e513fc20e3f93b02a8a3dda4848df6eb7d026806130b0d3"
+    "sha256": "12594d573f8b5c2eb1e818dd634fef4a48369b710ac73fc7b9bea2d80d957daf"
   },
   {
     "path": "configs/final.json",
-    "sha256": "eeb2c5bc41c37787ec999c9cc8c6413215647af090ba807e20199e7d77d2e219"
+    "sha256": "12594d573f8b5c2eb1e818dd634fef4a48369b710ac73fc7b9bea2d80d957daf"
   },
   {
     "path": "configs/matched_budget.json",
-    "sha256": "ba7430c8406ec2e348b5063879c144fd75c53303f359ee5b83e968b4f68cef36"
+    "sha256": "12594d573f8b5c2eb1e818dd634fef4a48369b710ac73fc7b9bea2d80d957daf"
   },
   {
     "path": "configs/paper_budget.json",
@@ -37,7 +37,7 @@
   },
   {
     "path": "configs/with_classical_comparators.json",
-    "sha256": "9a18a496aa6047c3642aee9264c9471f2ae51c92e1fbddd19825179ef5fdcf4b"
+    "sha256": "12594d573f8b5c2eb1e818dd634fef4a48369b710ac73fc7b9bea2d80d957daf"
   },
   {
     "path": "data/financial_data.csv.gz",
@@ -45,27 +45,35 @@
   },
   {
     "path": "docs/Current_Release_Status.json",
-    "sha256": "b66ab7e6978d676b136f63454445ac4cb09e303ddc5e40fa8cf96e02be008674"
+    "sha256": "352d6660a609dc277c5d674b95bb43dc78a8788e531f214130737b37aea58c3a"
   },
   {
     "path": "docs/Dev_Changes.md",
-    "sha256": "a659dc5aecdebb238e26057499f1c95b00e6a58ae05631417ba139f654737ab2"
+    "sha256": "1846ccd0cdfe3dbe44282aca25a85567e7b30b7f622ec741cf0dac10c1553aeb"
   },
   {
     "path": "docs/Dev_Validation.md",
-    "sha256": "b0175ed3e2698e4cb52f74b2a74285a1549e49edb6a1ac06b8c948fd933dd43d"
+    "sha256": "35e66188437074c93ae77697cd6f9df42c86ad994c46c6f46cd555dcb1737cb0"
+  },
+  {
+    "path": "docs/Final_Run.md",
+    "sha256": "9101df91a3cd79dc0db300829df4e3c828c38787a622ea5f4d023c64fb3cbacd"
+  },
+  {
+    "path": "docs/Final_Run_Plan.json",
+    "sha256": "a2fd6ec280d4dbe97714d1ba46f7e175bfdad554ad6bf851fe701b51077207f4"
   },
   {
     "path": "docs/Guide_Detailed.md",
-    "sha256": "f3a2e43fa41c94aad2a9c2f327a4a39d7d1eab41008b009ce75b2cf4aaa1285c"
+    "sha256": "699e0d68b76b70ec7f1411526e228cfa7ef25b9c1cbe09dd8b9e4ba6904be32a"
   },
   {
     "path": "docs/Method_Decisions.md",
-    "sha256": "8d7eedf1d23291e72b6853cc10386c0090243cbf7ee53e6345ab04390b733dc3"
+    "sha256": "0b5bc5ddfa02708b7e9807a7903eebf45a17ddd748d8f0a0b88af20834e00ad1"
   },
   {
     "path": "docs/Server_Benchmark_Review.md",
-    "sha256": "80b1d057e86f7e1f9f9cd5d7382f5aff2e14864e4ad943b186b38cbf3bb6ddd7"
+    "sha256": "4dad6bb43c5c36a2c37e624d675dfaafe75e8f9832d8beb9097155ebb9548c01"
   },
   {
     "path": "docs/Sources.md",
@@ -73,7 +81,7 @@
   },
   {
     "path": "notebooks/00_Environment_Data.ipynb",
-    "sha256": "4b67169413c2d969fd7f416fdf328b4d0d144b168a4b0309e49a1c492c47515a"
+    "sha256": "777d8fc68c87458c76b0ca073a6ac50b01eb25f765440b7b606824b3c49641ba"
   },
   {
     "path": "notebooks/01_Sequence_Selection.ipynb",
@@ -129,11 +137,11 @@
   },
   {
     "path": "tests/test_dev.py",
-    "sha256": "a4827fb1602230fad921d4a9a6c73d197a5b058b46041355250f0e67209f4998"
+    "sha256": "e1df123c126f91e815de682c40254c540e809132bb9720fe198a0a18d62f2fe4"
   },
   {
     "path": "thesis/__init__.py",
-    "sha256": "817a0baaa69684b7adf906c7169b9f98519b10e4d57430a88f693fdf9bbb2342"
+    "sha256": "f8da69d3abc4181ffeba8db456d8d2c1b4bc12718ffa6112854b6e8f18b693c3"
   },
   {
     "path": "thesis/analysis.py",

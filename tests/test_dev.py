@@ -287,8 +287,8 @@ class IntegrationTests(unittest.TestCase):
     def test_resource_schedule_includes_ga_woa_and_equal_budget(self):
         c = config()
         r = experiment_resources(c)
-        self.assertEqual(r['trainable_parameters'], 144412092)
-        self.assertEqual(r['total_hybrid_FE'], 6300000)
+        self.assertEqual(r['trainable_parameters'], 531932)
+        self.assertEqual(r['total_hybrid_FE'], 630000)
         self.assertTrue(r['equal_FE_budget'])
         self.assertEqual(r['shared_warm_training_runs'], 39)
         self.assertEqual(r['saved_neural_models'], 165)

@@ -1,5 +1,8 @@
 # Server benchmark review - 2026-10-21
 
+Historical review of the first benchmark. The compact calibration described below
+subsequently completed; the adopted final profile and launch are in Final_Run.md.
+
 The supplied Benchmark_Report.md and benchmark.json report completed execution on
 Windows with CUDA, using dev commit 6bb1d27. This confirms the measured training and
 fitness cases ran; it does not certify the full experiment's runtime, free disk

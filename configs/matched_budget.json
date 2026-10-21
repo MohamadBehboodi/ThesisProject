@@ -1,7 +1,7 @@
 {
-  "experiment_name": "DEV_V3_MATCHED_BUDGET",
+  "experiment_name": "FINAL_V4_MAIN",
   "data_path": "data/financial_data.csv.gz",
-  "output_root": "outputs/dev_v3/matched_budget",
+  "output_root": "outputs/final_v4/main",
   "min_days": 100,
   "start_year": 1389,
   "validation_years": [
@@ -27,21 +27,21 @@
     43
   ],
   "hidden_widths": [
-    4000,
-    2000,
-    2000,
+    256,
+    128,
+    64,
     30
   ],
   "dropout": 0.1,
   "epochs": 30,
-  "batch_size": 8,
+  "batch_size": 32,
   "learning_rate": 0.001,
   "l1_coefficient": 1e-06,
   "gradient_clip": 1.0,
   "fitness": "half_rmse",
-  "population": 200,
-  "evaluations": 50000,
-  "tar_evaluations": 50000,
+  "population": 30,
+  "evaluations": 5000,
+  "tar_evaluations": 5000,
   "weight_bound": 1.0,
   "population_initialization": "warm_normal",
   "initial_std": 0.01,

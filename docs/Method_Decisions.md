@@ -1,4 +1,4 @@
-# Scientific implementation decisions - dev v3
+# Scientific implementation decisions - final v4 profile
 
 ## Scope and accepted data design
 
@@ -10,17 +10,23 @@ The supplied label is company-year t -> profitability t+1; it is not shifted aga
 
 The 18 features, >=100-day eligible cohort, chronological ordering, train-only scaling,
 true-length packing, full-year/last100 development selection, existing embargo/folds,
-test years, seeds and [4000,2000,2000,30] widths are retained. Architecture/budget feasibility
-will be decided from the server benchmark. Previous discussion of missing publication
+test years and seeds are retained. After the Windows benchmarks, widths are set to
+[256,128,64,30], batch size 32, population 30 and a matched budget of 5,000 FEs.
+This resource-based choice precedes final-model fitting and does not use held-out outcomes.
+Previous discussion of missing publication
 timestamps is not treated as a data-validity blocker after the researcher's confirmation.
 
 ## Model and common objective
 
-Three native LSTM layers (4000,2000,2000), a Dense hidden layer of 30 and two output logits.
+Three native LSTM layers (256,128,64), a Dense hidden layer of 30 and two output logits.
 Sigmoid/tanh remain inside LSTM gates; ReLU and dropout .1 follow recurrent outputs;
 the dense hidden layer uses ReLU. This is a declared interpretation of the base paper's
-layer description. The parameter count is 144,412,092 for 18 inputs, not the inconsistent
-small counts printed in the article's complexity table.
+layer description. The final network has 531,932 trainable parameters for 18 inputs.
+The original [4000,2000,2000,30] interpretation has 144,412,092 parameters and remains
+in the historical large-model benchmark profile. Its measured multi-year full-plan
+cost led to the explicitly documented capacity/budget adaptation. The thesis does
+not claim exact architecture or budget reproduction of the base article, nor that
+the smaller model has equivalent predictive accuracy. See Final_Run.md for evidence.
 
 Default data loss is 0.5*sqrt(mean((softmax(logits)[:,1]-y)^2)). The squared-error mean
 has a 1e-12 floor only to avoid an undefined zero-root derivative. Cross entropy is an
@@ -141,8 +147,15 @@ LR retains its fixed 34 window summaries, train-only scaling and C=1.
 
 ## Fair comparison and threshold selection
 
-Default/final/matched profiles allocate 50,000 FEs to each of the six metaheuristics.
-TAR's 300,000-FE paper setting is a separate paper_budget sensitivity profile.
+Default/final/matched/with_classical_comparators are identical aliases of the final
+profile, allocating 5,000 FEs to each of the six metaheuristics with population 30.
+Across six validation folds plus final training and three seeds this is 630,000 FEs.
+The 30 initial-agent evaluations are included in each budget. More evaluations than
+the 1,000-FE calibration plan give additional search opportunity within the user's
+few-day compute allowance; this is not a convergence guarantee. Convergence curves
+and warm-start improvement must be reported even when no improvement is observed.
+TAR's 300,000-FE paper setting is a separate historical paper_budget profile with
+the original large architecture; it is not part of the final run.
 FEs include population initialization and all additional opposition/TAR proposals.
 Equal FEs do not imply equal wall-clock cost.
 
@@ -169,8 +182,9 @@ Cumulative timers exclude downtime; hard kills may lose time after the last chec
 and are flagged on the next invocation. Physical FE logs include replayed work.
 Shared warm cost is reported separately to avoid charging it once to every hybrid.
 
-Changes in sources/data/scientific config require a new output_root. All dev profiles use
-outputs/dev_v3/... and never overwrite previous experiment roots. GPU reproducibility
+Changes in sources/data/scientific config require a new output_root. The final profile
+uses outputs/final_v4/main; dev benchmark/smoke profiles use outputs/dev_v3/...
+and never overwrite previous experiment roots. GPU reproducibility
 across hardware/PyTorch releases is not guaranteed. Architecture and budgets are not
 silently reduced. The benchmark measures training-only work and produces scenario
 estimates; it cannot guarantee a full-population completion time.

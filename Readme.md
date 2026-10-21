@@ -1,110 +1,82 @@
-# DLSTM stock-profit prediction - dev v3
+# DLSTM stock-profit prediction - final v4
 
 Research project by Mohamad Hasan Behboodi, Allameh Tabataba'i University.
 
-This branch implements the agreed independent reconstruction of DLSTM with
-CHOA, WCHOA, reconstructed GSOBL-CHOA, TAR-CHOA, real-coded GA and standard WOA.
-The aim is scientific fidelity with documented implementation choices.
-Financial-data timing and the annual/daily merge were verified by the researcher;
-the annual ratios are intentionally constant within each company-year.
+The final profile was chosen from two training-only benchmarks on the Windows RTX 3080
+server and the researcher's few-day compute allowance. It uses three LSTM layers and
+compares DLSTM, logistic regression, training-majority, CHOA, WCHOA, reconstructed
+GSOBL-CHOA, TAR-CHOA, real-coded GA and WOA. Data timing and the annual/daily merge were
+verified by the researcher.
 
-## Update the Windows server
+## Adopted final profile
 
-Run these commands inside your existing project folder and activated Python environment:
+| Setting | Value |
+|---|---|
+| LSTM widths / dense width | 256, 128, 64 / 30 |
+| Trainable parameters | 531,932 |
+| Batch size / Adam epochs | 32 / 30 |
+| Population / FEs per optimizer, split and seed | 30 / 5,000 |
+| Seeds / validation folds | 3 / 6 |
+| Total hybrid FEs | 630,000, including initial populations |
+| Sequence choice | full_year versus last100, selected by development validation |
+| Canonical output root | outputs/final_v4/main |
+
+The network retains depth with moderate widths. Architecture and search budgets differ
+from the base article; these are documented resource adaptations. Timing does not
+establish predictive accuracy, convergence or superiority over the baselines.
+
+The 1,000-FE calibration report estimated 6.65-15.79 hours for the complete schedule.
+Scaling its measured rates to the final 5,000-FE budget gives:
+
+| Selected sequence | Estimated complete schedule |
+|---|---|
+| full_year | 58.11-78.36 hours, about 2.4-3.3 days |
+| last100 | 32.60-48.68 hours, about 1.4-2.0 days |
+
+Allow roughly 3-5 days for uninterrupted work and operational variation. These are
+scenarios rather than completion guarantees. See [Final_Run.md](docs/Final_Run.md) and
+[the machine-readable plan](docs/Final_Run_Plan.json).
+
+## Launch on the Windows server
+
+Inside the project folder and the existing working CUDA-enabled Python environment:
 
 ```powershell
 git fetch origin
-git switch dev
-git pull --ff-only origin dev
+git switch main
+git pull --ff-only origin main
 python -m unittest discover -s tests -v
-python run.py preflight --config configs/default.json
+python run.py preflight --config configs/final.json
+python -u run.py all --config configs/final.json 2>&1 | Tee-Object -FilePath final_v4.log -Append
 ```
 
-The current CUDA-enabled PyTorch installation can be retained. This revision adds
-no third-party runtime dependency. See requirements.txt for the supported versions.
+Start the last command after tests and preflight pass. Use your existing persistent
+terminal session or keep the terminal open throughout the run. The all action prepares
+sequences, validates both sequence modes, selects a mode, validates all methods, freezes
+OOF thresholds, trains/evaluates the final models and creates the statistical analysis.
+No additional benchmark is required for these measured widths and batch size.
 
-## Run the limited server benchmark first
+To resume, repeat the same all command with the same config and output root. Completed
+runs are skipped; interrupted work resumes from committed checkpoints. Do not pull
+code or edit scientific settings during a run. Old dev benchmark and smoke roots are
+separate from the new final root. With no arguments, python run.py performs preflight only.
 
-The first server benchmark completed, but its large-model schedule spans several
-continuous years. See [the review and next diagnostic](docs/Server_Benchmark_Review.md).
-The next measurement uses the separate candidate profile:
+## Configuration and artifacts
 
-```powershell
-python -u run.py benchmark --config configs/benchmark_compact.json
-```
+configs/default.json, final.json, matched_budget.json and with_classical_comparators.json
+are identical aliases of this one final profile and output root. All notebooks read
+default.json, so notebook and CLI execution share the same experiment.
 
-This measures a proposed [256,128,64,30] network with batch size 32. Its runtime
-scenarios use population 30 and 1,000 FEs per method/split/seed. These settings are
-for calibration pending review; no new final profile is selected. The original
-large-architecture diagnostic remains available below.
+configs/benchmark.json and benchmark_compact.json preserve the two historical cost
+measurements. configs/paper_budget.json preserves the original expensive architecture
+and asymmetric paper budget as an optional reference; it is not part of the final run.
+configs/smoke.json remains a tiny CPU execution check, not a source of thesis results.
 
-```powershell
-python -u run.py benchmark --config configs/benchmark.json 2>&1 | Tee-Object -FilePath benchmark.log
-```
+Results appear in outputs/final_v4/main/analysis. Main tables are model_comparison.csv,
+seed_metrics.csv, paired_comparisons.csv and compute_costs.csv. The root also preserves
+sequence_choice.json and protocol_locked.json. Keep model.pt, training checkpoints,
+predictions and protocol/config files in backups; notebook capsules omit neural weights
+and population buffers.
 
-The command prints the location of **Benchmark_Report.md** and **benchmark.json**.
-They are saved in a timestamped folder under
-outputs/dev_v3/benchmark/benchmarks. Send both reports for review before choosing
-the final architecture and budget.
-
-The benchmark keeps widths **[4000, 2000, 2000, 30]**. It measures a few Adam steps,
-full fitness passes on training cohorts, GPU peaks, checkpoint I/O, and the six
-optimizers' host overhead using a small population with the full vector dimension.
-It produces no validation/test predictions and does not freeze a final protocol.
-CPU smoke timing is not a substitute for this CUDA measurement.
-
-To use another SSD, choose an existing drive letter and override only the output path:
-
-```powershell
-python -u run.py benchmark --config configs/benchmark.json --output-root "E:\ThesisRuns\dev-benchmark"
-```
-
-The full population has two buffers totaling about **215.19 GiB**. The preflight
-also includes retained checkpoints/model weights in its disk estimate. Free capacity
-must be on the output volume. It does not pool free space across SSDs.
-
-## Profiles and execution
-
-| Config | Purpose |
-|---|---|
-| configs/default.json | Canonical dev profile; all comparators; equal 50,000 FE budgets |
-| configs/benchmark.json | Same large architecture/settings, bounded diagnostic work |
-| configs/benchmark_compact.json | Proposed compact calibration; final settings pending its server timings |
-| configs/smoke.json | CPU execution check only; tiny network; not thesis results |
-| configs/final.json | Separate final-candidate output root; same matched scientific settings |
-| configs/matched_budget.json | Explicit matched-budget profile |
-| configs/paper_budget.json | Optional sensitivity profile: TAR 300,000 FE, others 50,000 |
-| configs/with_classical_comparators.json | Compatibility profile; GA/WOA are now included in every main profile |
-
-Every notebook reads **configs/default.json**. Notebook 07 is now required for GA/WOA.
-Notebook 00 also has an opt-in benchmark cell. Notebook 02 includes the training-majority
-baseline. See docs/Guide_Detailed.md for the phase order.
-
-With no arguments, **python run.py performs preflight only**. After benchmark review
-and the agreed dev-to-main merge, the explicit complete-run command is:
-
-```powershell
-python -u run.py all --config configs/default.json 2>&1 | Tee-Object -FilePath final_run.log
-```
-
-There is no automatic architecture, budget or CPU fallback. dev is not merged into
-main by this update. Update code/configuration only between experiments; use a fresh
-output_root after a scientific change. Existing outputs/main_windows and outputs/final_v1
-are not reused.
-
-## Main changes
-
-- Shared Half-RMSE plus first-layer L1 for Adam and all metaheuristic fitness calls.
-- CHOA group schedules and a coordinatewise Gauss-mapped chaotic-position branch.
-- TAR evaluates only its active lambda phase, determined from the current FE count.
-- Reconstructed GSOBL: standard opposition on the weakest half, greedy acceptance.
-- Exact OOF threshold search, tied probabilities handled as a group.
-- Common deterministic bounds expanded to contain the unchanged warm start, or an explicit error policy.
-- GA and WOA are main comparators under their real names; ARGA/ARWOA are not claimed.
-- Class-specific loss metrics and a training-majority baseline.
-- Active-time accumulation, physical FE ledger, objective components, vector-change
-  diagnostics and explicit Windows memory-map cleanup.
-
-Detailed formulas, limitations and traceability are in docs/Method_Decisions.md.
-Model weights and resumable checkpoints need separate backups; notebook capsules
-recover essential tabular/JSON artifacts, not neural weights.
+See [the Windows guide](docs/Guide_Detailed.md), [method decisions](docs/Method_Decisions.md),
+[validation record](docs/Dev_Validation.md) and [first benchmark review](docs/Server_Benchmark_Review.md).

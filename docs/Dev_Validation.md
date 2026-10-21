@@ -1,4 +1,4 @@
-# dev v3 validation record
+# Implementation validation record
 
 Validated against the development changes based on main commit
 fc9a7b9b4545c2fa5158dc56f682965fd217c880. These checks establish implementation
@@ -58,10 +58,19 @@ not show this behavior. A traced supplied-data run confirmed both population fil
 were closed and absent immediately after deletion; fixture cleanup tests also pass.
 This host-specific observation is recorded separately from application cleanup.
 
-## Required server follow-up
+## Server evidence and final-profile update
 
-Native Windows locking/deletion and CUDA execution have not been tested here.
-The [server guide](Guide_Detailed.md) provides tests, preflight and the bounded benchmark.
-Review Benchmark_Report.md and benchmark.json from the intended GPU and output SSD
-before agreeing final widths, population or FE budgets. No final GPU experiment has
-been launched, and dev has not been merged into main by this update.
+The researcher subsequently supplied two completed native Windows/CUDA benchmark
+reports. These exercise bounded Adam steps, full training-cohort fitness passes,
+checkpoint I/O and all six host optimizers with temporary-directory cleanup. They
+support the adopted [256,128,64,30], batch-32 final profile. Native Windows interruption
+recovery and the complete final schedule are not established by these bounded reports.
+
+The final profile increases the measured 1,000-FE schedule to 5,000 equal FEs per
+method/split/seed. The resource-count test now expects 531,932 parameters and 630,000
+FEs, with 39 shared warm runs and 165 saved neural models. The same 30-test suite
+passed again for this release (27.921 seconds, Linux/Python 3.12.14/PyTorch 2.6.0+cpu).
+The adopted model's parameter count and forward shape were also checked. Config aliases,
+module/notebook syntax, manifest and unchanged
+data/vendor hashes are also checked. No final GPU experiment is launched by this
+development workflow. See Final_Run.md for the server launch after tests/preflight.
