@@ -5,7 +5,7 @@
   },
   {
     "path": "Readme.md",
-    "sha256": "9dd60c0cff022642a7006b02c0c752f8e743faca77df039b2aaa6796fc233364"
+    "sha256": "4701d929f5ddf0cc0d528dd64256c4f2a93fbac26f6591708e540359da77d99d"
   },
   {
     "path": "check_resume.py",
@@ -49,7 +49,7 @@
   },
   {
     "path": "docs/Current_Release_Status.json",
-    "sha256": "2a539517fa7d337132709f01fc68c73d74480592fd0852d5b9e3f13fc6adf280"
+    "sha256": "90ab958c97d164974c3888f490612305ff6b34cc6c3dc710eab0d3187d7e3ed4"
   },
   {
     "path": "docs/Dev_Changes.md",
@@ -89,7 +89,7 @@
   },
   {
     "path": "docs/Windows_IO_Hotfix.md",
-    "sha256": "0798264106b33e8afa51f01d5b49f69f9e1bc9e7abd186ae4a5d1866d64d69b9"
+    "sha256": "b9b853a1781aa7c64ae10d38387aed2dcf2b4c3ba5bd41e02bbed5891ab2a10c"
   },
   {
     "path": "notebooks/00_Environment_Data.ipynb",

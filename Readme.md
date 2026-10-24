@@ -6,6 +6,8 @@ For an interrupted Windows run with WinError 5 while saving timing.json, use the
 [checkpoint-compatible I/O hotfix and resume guide](docs/Windows_IO_Hotfix.md).
 Keep the existing experiment outputs; check_resume.py audits compatibility without
 rewriting saved keys or restarting completed models.
+The recovery patch is on dev; follow that guide's branch-switch steps before resuming
+an affected run. The main-branch final profile has not been changed by this hotfix.
 
 The final profile was chosen from two training-only benchmarks on the Windows RTX 3080
 server and the researcher's few-day compute allowance. It uses three LSTM layers and

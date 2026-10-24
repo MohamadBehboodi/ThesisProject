@@ -1,5 +1,9 @@
 # Windows file-replacement hotfix and checkpoint-safe resume
 
+The operational recovery patch is published on dev. Main remains at the original
+final-v4 release pending separate main-branch publication approval. Use dev for this
+recovery; its final scientific config and output root are identical to the release.
+
 ## Reported failure
 
 The reported final-v4 run reaches CHOA generation 52 / committed FE 1590, then fails
@@ -61,8 +65,8 @@ Inside the project folder and the existing psmux session:
 
 ```powershell
 git fetch origin
-git switch main
-git pull --ff-only origin main
+git switch dev
+git pull --ff-only origin dev
 .\.venv-gpu\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv-gpu\Scripts\python.exe check_resume.py --config configs/final.json
 ```

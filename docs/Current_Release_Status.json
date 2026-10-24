@@ -18,6 +18,8 @@
       "total": 43,
       "passed": 42,
       "skipped_native_windows": 1
-    }
+    },
+    "branch": "dev",
+    "main_publication": "Pending separate main-branch approval; use dev for the checkpoint-compatible recovery."
   }
 }
