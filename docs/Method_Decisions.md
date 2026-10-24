@@ -189,6 +189,12 @@ across hardware/PyTorch releases is not guaranteed. Architecture and budgets are
 silently reduced. The benchmark measures training-only work and produces scenario
 estimates; it cannot guarantee a full-population completion time.
 
+The reviewed 2026-10-24 Windows atomic-I/O hotfix has exact source-hash aliases to
+the published final-v4 numerical implementation, allowing its existing checkpoints
+to resume without rewriting keys. Only those approved source bytes (LF/CRLF) qualify;
+further source, data or scientific-setting changes still invalidate identity. See
+Windows_IO_Hotfix.md and Runtime_Source_Compatibility.json for the bounded exception.
+
 ## Evidence
 
 Base article: Tang, Yang & Khishe (2023), Heliyon e19431,

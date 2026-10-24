@@ -74,3 +74,14 @@ The adopted model's parameter count and forward shape were also checked. Config 
 module/notebook syntax, manifest and unchanged
 data/vendor hashes are also checked. No final GPU experiment is launched by this
 development workflow. See Final_Run.md for the server launch after tests/preflight.
+
+## Windows atomic-I/O hotfix - 2026-10-24
+
+The reported WinError 5 during timing-file replacement led to the operational-only
+patch described in Windows_IO_Hotfix.md. The complete expanded suite ran 43 tests:
+42 passed and one Windows-only real-handle test was skipped on Linux (13.763 seconds).
+Tests include transient/permanent denial, old-target preservation, bounded retries,
+timer throttling, original exception preservation, exact final-v4 identity continuity,
+LF/CRLF compatibility, read-only auditing and deterministic checkpoint replay.
+The numerical model, dataset processing and final settings remain unchanged. Native
+Windows lock-owner diagnosis and execution of the real-handle test remain server-side.

@@ -3,6 +3,8 @@ import hashlib, json, os, random, platform, sys
 import numpy as np
 import time
 import subprocess
+import tempfile
+import contextlib
 from datetime import datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -10,12 +12,43 @@ ROOT = Path(__file__).resolve().parents[1]
 # recorded environment and subsequent deterministic cuBLAS setup agree.
 os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG', ':4096:8')
 
+def replace_file(source, destination, *, attempts=10):
+    """Retry Windows access/sharing locks without deleting the old destination."""
+    if attempts < 1:
+        raise ValueError('At least one replacement attempt is required.')
+    for attempt in range(attempts):
+        try:
+            os.replace(source, destination)
+            return
+        except OSError as exc:
+            if getattr(exc, 'winerror', None) not in {5, 32, 33}:
+                raise
+            if attempt == attempts - 1:
+                exc.add_note(
+                    f'Atomic replace failed after {attempts} attempts: {destination}. '
+                    'Check open file handles, read-only attributes and folder permissions. '
+                    'The existing destination was not deleted.'
+                )
+                raise
+            time.sleep(min(.05 * 2 ** attempt, 1.0))
+
+
 def atomic_json(path, obj):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name(path.name + '.tmp')
-    tmp.write_text(json.dumps(obj, ensure_ascii=False, indent=2, allow_nan=False), encoding='utf-8')
-    os.replace(tmp, path)
+    payload = json.dumps(obj, ensure_ascii=False, indent=2, allow_nan=False)
+    tmp = None
+    try:
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', newline='\n',
+                                         dir=path.parent, prefix=path.name + '.',
+                                         suffix='.tmp', delete=False) as stream:
+            tmp = Path(stream.name)
+            stream.write(payload)
+        replace_file(tmp, path)
+    finally:
+        if tmp is not None:
+            with contextlib.suppress(OSError):
+                tmp.unlink(missing_ok=True)
 
 def digest(path):
     h = hashlib.sha256()
@@ -76,9 +109,15 @@ def atomic_torch(path, obj):
     import torch
     path=Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp=path.with_name(path.name+'.tmp')
-    torch.save(obj, tmp)
-    os.replace(tmp,path)
+    with tempfile.NamedTemporaryFile(dir=path.parent, prefix=path.name + '.',
+                                     suffix='.tmp', delete=False) as stream:
+        tmp = Path(stream.name)
+    try:
+        torch.save(obj, tmp)
+        replace_file(tmp, path)
+    finally:
+        with contextlib.suppress(OSError):
+            tmp.unlink(missing_ok=True)
 
 def rng_state():
     import torch
@@ -115,6 +154,7 @@ class CumulativeTimer:
         self.uncertain_sessions = int(old.get('uncertain_sessions', 0)) + int(old.get('status') == 'running')
         self.started = time.perf_counter()
         self.started_utc = datetime.now(timezone.utc).isoformat()
+        self.last_checkpoint = None
         self.checkpoint()
         return self
 
@@ -127,6 +167,12 @@ class CumulativeTimer:
         return self.previous + self.session_seconds
 
     def checkpoint(self, status='running'):
+        # Timing is auxiliary; limit file replacements while always persisting
+        # entry and exit. Scientific/model checkpoints keep their old cadence.
+        now = time.perf_counter()
+        if (status == 'running' and self.last_checkpoint is not None
+                and now - self.last_checkpoint < 5.0):
+            return
         atomic_json(self.path, dict(
             seconds=self.seconds, session_seconds=self.session_seconds,
             sessions=self.sessions, uncertain_sessions=self.uncertain_sessions,
@@ -134,6 +180,13 @@ class CumulativeTimer:
             updated_utc=datetime.now(timezone.utc).isoformat(),
             note='Active time only. A hard kill may lose time since the last progress checkpoint.'
         ))
+        self.last_checkpoint = time.perf_counter()
 
     def __exit__(self, kind, value, traceback):
-        self.checkpoint('completed' if kind is None else 'interrupted')
+        if kind is None:
+            self.checkpoint('completed')
+        else:
+            try:
+                self.checkpoint('interrupted')
+            except OSError as exc:
+                value.add_note(f'Additional timing write failure for {self.path}: {exc}')

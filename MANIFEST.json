@@ -5,7 +5,11 @@
   },
   {
     "path": "Readme.md",
-    "sha256": "6e5e5909daf89cdce222271a7a92fa16ce3eadc7c034069ec305afdd2a021645"
+    "sha256": "9dd60c0cff022642a7006b02c0c752f8e743faca77df039b2aaa6796fc233364"
+  },
+  {
+    "path": "check_resume.py",
+    "sha256": "081f3d4131fd99c1a419b53626f41b0ddc54d3459957eb8a3df728ffeb904bf7"
   },
   {
     "path": "configs/benchmark.json",
@@ -45,7 +49,7 @@
   },
   {
     "path": "docs/Current_Release_Status.json",
-    "sha256": "352d6660a609dc277c5d674b95bb43dc78a8788e531f214130737b37aea58c3a"
+    "sha256": "2a539517fa7d337132709f01fc68c73d74480592fd0852d5b9e3f13fc6adf280"
   },
   {
     "path": "docs/Dev_Changes.md",
@@ -53,7 +57,7 @@
   },
   {
     "path": "docs/Dev_Validation.md",
-    "sha256": "35e66188437074c93ae77697cd6f9df42c86ad994c46c6f46cd555dcb1737cb0"
+    "sha256": "1c32223d9a47027c9154f25823d6c437940d631ebd4011fcbde4fd78a5176cf0"
   },
   {
     "path": "docs/Final_Run.md",
@@ -65,11 +69,15 @@
   },
   {
     "path": "docs/Guide_Detailed.md",
-    "sha256": "699e0d68b76b70ec7f1411526e228cfa7ef25b9c1cbe09dd8b9e4ba6904be32a"
+    "sha256": "14a513a8e666b9d780d629a33bbb230b24fab647ca3daad6cbc40e59ace2daff"
   },
   {
     "path": "docs/Method_Decisions.md",
-    "sha256": "0b5bc5ddfa02708b7e9807a7903eebf45a17ddd748d8f0a0b88af20834e00ad1"
+    "sha256": "f988d17f93f00f672dd83a77bcb11584506e24697557080e6d5dcbf54d1da5ef"
+  },
+  {
+    "path": "docs/Runtime_Source_Compatibility.json",
+    "sha256": "030f8dc13afaa2b9bf0960df7a19a726b1fd69d5fcd1423f483e43b6c81d9823"
   },
   {
     "path": "docs/Server_Benchmark_Review.md",
@@ -78,6 +86,10 @@
   {
     "path": "docs/Sources.md",
     "sha256": "c5bd3c38490d04e2acebb26edfa4a95b5b2e190e6bf6e579ffed2c5473170e2a"
+  },
+  {
+    "path": "docs/Windows_IO_Hotfix.md",
+    "sha256": "0798264106b33e8afa51f01d5b49f69f9e1bc9e7abd186ae4a5d1866d64d69b9"
   },
   {
     "path": "notebooks/00_Environment_Data.ipynb",
@@ -140,6 +152,10 @@
     "sha256": "e1df123c126f91e815de682c40254c540e809132bb9720fe198a0a18d62f2fe4"
   },
   {
+    "path": "tests/test_windows_io.py",
+    "sha256": "eb9eb07e8d6b9c16a725f68ebc6a2977e95b0c8388488e529d9bef6b605e8d34"
+  },
+  {
     "path": "thesis/__init__.py",
     "sha256": "f8da69d3abc4181ffeba8db456d8d2c1b4bc12718ffa6112854b6e8f18b693c3"
   },
@@ -157,7 +173,7 @@
   },
   {
     "path": "thesis/common.py",
-    "sha256": "f14839cf0b730219cc1cae1d96a2d6df765ab550020b325d36d13f923f376a60"
+    "sha256": "67b124032a91e4f4ce8171af0daec62db5d1d69cdef41ed0d3f5b4cf91438c84"
   },
   {
     "path": "thesis/data.py",
@@ -173,11 +189,11 @@
   },
   {
     "path": "thesis/optimizers.py",
-    "sha256": "4d7a814433688fa90c1cc9b468ed8cac0f25da97d2c0529a130c1829bb2a881b"
+    "sha256": "b8c05885143d265c5da21a66805f9fa4a3d82b9b0825345673e22e1f0e34d3d7"
   },
   {
     "path": "thesis/pipeline.py",
-    "sha256": "bd7c4cd167f3fc7b26b9771bb5e3f7598c92148a4efdabc9fcf3daffe92f2d7c"
+    "sha256": "d5125cdb60c2e3c8b0833088e8906b0c4e8aec0ad4b5e86d40f008cc7866fac1"
   },
   {
     "path": "thesis/recovery.py",

@@ -2,11 +2,10 @@
 from pathlib import Path
 import hashlib
 import json
-import os
 import time
 import shutil
 import numpy as np
-from .common import atomic_json, signature, CumulativeTimer
+from .common import atomic_json, signature, CumulativeTimer, replace_file
 
 NAMES = {'CHOA', 'WCHOA', 'GSOBL_CHOA', 'TAR_CHOA', 'GA', 'WOA'}
 ALIASES = {'GA_reference': 'GA', 'WOA_reference': 'WOA'}
@@ -224,7 +223,7 @@ def _search(name, fitness, initial, c, path, progress, timer, live,
         best_path = path / f'best_{slot}.npy'
         with best_path.with_suffix('.npy.tmp').open('wb') as stream:
             np.save(stream, best)
-        os.replace(best_path.with_suffix('.npy.tmp'), best_path)
+        replace_file(best_path.with_suffix('.npy.tmp'), best_path)
         counters['snapshot_seconds'] += time.perf_counter() - started
         atomic_json(checkpoint, dict(
             version=STATE_VERSION, identity=identity, slot=slot, dimension=d, population=n,

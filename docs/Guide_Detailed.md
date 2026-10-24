@@ -104,6 +104,12 @@ protocol. With no arguments, python run.py performs preflight only.
 
 ## Resume, monitoring and backups
 
+If WinError 5 occurs during atomic file replacement, see Windows_IO_Hotfix.md for
+the reviewed runtime-only update and read-only check_resume.py command. It preserves
+the published final-v4 experiment identity, including Windows CRLF source checkouts.
+This exception applies only to the exact reviewed I/O revisions; other source or
+scientific setting changes continue to require a fresh experiment.
+
 Re-run the same all command to resume. Completed runs are skipped. Adam restores model,
 optimizer and RNG state at epoch boundaries. Population search commits alternating
 slots at generation boundaries. A partial generation can be replayed, so physical

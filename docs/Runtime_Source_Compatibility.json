@@ -1,0 +1,68 @@
+{
+  "purpose": "Exact-byte aliases for the reviewed Windows atomic-I/O-only hotfix; no numerical/config/data changes are accepted.",
+  "base_commit": "6e9725fb06082c9703149455252246528e38228d",
+  "baseline_sources": {
+    "metrics.py": {
+      "LF": "18e8a6852d64ad45c02460818079c8eb188b6c2f4ac0b02f0d22342140fad05e",
+      "CRLF": "0c642e33249bad5680f396415143986000cbc8ff78aceeeba8fb9db7bfe161ae"
+    },
+    "common.py": {
+      "LF": "f14839cf0b730219cc1cae1d96a2d6df765ab550020b325d36d13f923f376a60",
+      "CRLF": "4e2fc24bd5a0b91d3325bd91838ff7d51bc0f72d0a73d997bce01d5799dacfb4"
+    },
+    "analysis.py": {
+      "LF": "2168308e5f0e83ca87fe8eda830abb3694d05b913cf1c5b54aad29e50575ba78",
+      "CRLF": "42be764f274c588b8489e293eabf5b4f88d02d3357c003db208c5b817e2830c4"
+    },
+    "benchmark.py": {
+      "LF": "e8e74efcf1ac495d56d3398f914ff9847891c6bcf71e9c261729d038a69462a7",
+      "CRLF": "ce6b13d44048ec2d63dd92830f9704f5e4c03c817d59acc74f545068a700eb40"
+    },
+    "__init__.py": {
+      "LF": "f8da69d3abc4181ffeba8db456d8d2c1b4bc12718ffa6112854b6e8f18b693c3",
+      "CRLF": "cb38c0762ee4fef00b24bd6f3a9227bcc256a60b017a6ffdca6007dd6f6dac63"
+    },
+    "resources.py": {
+      "LF": "69b8d8346a4ddd9909a3a585a3e687186d09c26c1d2c4278c8b8026e023ed504",
+      "CRLF": "945487b9a5da0f2bf8faf7583b49694aa5a7d386c996a7adaadf01a67aea1f30"
+    },
+    "network.py": {
+      "LF": "c4c95a95c9505432c584f90e1df772a8f6e7530a80b371fff80df14eaa27e5a2",
+      "CRLF": "a950bd251183825f125ebd5b5006d5a7ae99e5c372baec7b54d176585396726e"
+    },
+    "pipeline.py": {
+      "LF": "bd7c4cd167f3fc7b26b9771bb5e3f7598c92148a4efdabc9fcf3daffe92f2d7c",
+      "CRLF": "0675eb31a5e3fb7e173af854ef7575e6fca05699dd6f1adeefd760c0739ca767"
+    },
+    "recovery.py": {
+      "LF": "1582fb98d27e392f58ffc712a9c6e573b3056878d391a03a9cbe6a2cdc26f8eb",
+      "CRLF": "fb4aabe74893ac28e892f7b1fe1e2575ec1f494c94c3d39e69b8ef1571cbdb42"
+    },
+    "data.py": {
+      "LF": "3fdbcc50fc98be060857336ca7e95cc53ad48a764fedbedcdf53ec943eca0bdd",
+      "CRLF": "1767e6cfc98ce9ba44460c78c64638411f4226631201e81b694dec781dadfe85"
+    },
+    "optimizers.py": {
+      "LF": "4d7a814433688fa90c1cc9b468ed8cac0f25da97d2c0529a130c1829bb2a881b",
+      "CRLF": "ef8983f35b2471ee48a800dd078d1c43cd4911e8e6fcf121aa1da15f41168089"
+    },
+    "cli.py": {
+      "LF": "9b4c900214865df985b64d4d6d75b55c6344e23bb3fff321f72e2b5aed8e946d",
+      "CRLF": "6693e118c2a799e7ae107ae76103387ce4e191a0757f6ea9b32b76638b1f23f3"
+    }
+  },
+  "sources": {
+    "common.py": {
+      "67b124032a91e4f4ce8171af0daec62db5d1d69cdef41ed0d3f5b4cf91438c84": "f14839cf0b730219cc1cae1d96a2d6df765ab550020b325d36d13f923f376a60",
+      "6a9acb7731b7f7cb6f91f773700c3d708e939df9ed5bdf4c78280973c320c452": "4e2fc24bd5a0b91d3325bd91838ff7d51bc0f72d0a73d997bce01d5799dacfb4"
+    },
+    "pipeline.py": {
+      "d5125cdb60c2e3c8b0833088e8906b0c4e8aec0ad4b5e86d40f008cc7866fac1": "bd7c4cd167f3fc7b26b9771bb5e3f7598c92148a4efdabc9fcf3daffe92f2d7c",
+      "68154373a5973cdc7b1fb40e57d74a37a51684e214dd37063bd632cfa12e4322": "0675eb31a5e3fb7e173af854ef7575e6fca05699dd6f1adeefd760c0739ca767"
+    },
+    "optimizers.py": {
+      "b8c05885143d265c5da21a66805f9fa4a3d82b9b0825345673e22e1f0e34d3d7": "4d7a814433688fa90c1cc9b468ed8cac0f25da97d2c0529a130c1829bb2a881b",
+      "8de4d070ce67e5cf14b1c42972a18da485f966c91ab26b5ecc95a5efc52c6a2b": "ef8983f35b2471ee48a800dd078d1c43cd4911e8e6fcf121aa1da15f41168089"
+    }
+  }
+}

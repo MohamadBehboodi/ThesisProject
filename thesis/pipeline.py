@@ -12,9 +12,28 @@ from .network import make_model,fit_baseline,predict,vector,assign,Fitness,param
 from .optimizers import run_optimizer
 from .metrics import evaluate,threshold_from_oof
 
+def experiment_sources():
+    """Canonicalize only exact reviewed I/O-only revisions, including CRLF checkouts.
+
+    Every other source edit retains its actual hash and invalidates old results.
+    This lets the Windows atomic-I/O hotfix resume existing final-v4 checkpoints
+    without changing their keys, parameters, predictions, or numerical settings.
+    """
+    sources={p.name:digest(p) for p in (ROOT/'thesis').glob('*.py')}
+    compatibility=ROOT/'docs'/'Runtime_Source_Compatibility.json'
+    if compatibility.exists():
+        approved=json.loads(compatibility.read_text(encoding='utf-8'))['sources']
+        if set(approved)-{'common.py','pipeline.py','optimizers.py'}:
+            raise ValueError('Unexpected module in runtime source compatibility manifest.')
+        for name, aliases in approved.items():
+            if sources.get(name) in aliases:
+                sources[name]=aliases[sources[name]]
+    return sources
+
+
 def experiment_key(c):
     settings={k:v for k,v in c.items() if k not in ['data_path','output_root','device','bootstrap_repeats'] and not k.startswith('_')}
-    sources={p.name:digest(p) for p in (ROOT/'thesis').glob('*.py')}
+    sources=experiment_sources()
     return signature(
         dict(
             settings=settings,

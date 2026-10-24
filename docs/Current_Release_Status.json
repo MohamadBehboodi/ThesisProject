@@ -7,5 +7,17 @@
   "native_windows_gpu_benchmark_executed": true,
   "validation": "See docs/Dev_Validation.md",
   "final_plan": "See docs/Final_Run.md and docs/Final_Run_Plan.json",
-  "note": "Independent reconstruction; training-only server benchmarks reviewed; moderate measured architecture and equal 5000-FE final budgets selected under the user-authorized few-day compute allowance."
+  "note": "Independent reconstruction; training-only server benchmarks reviewed; moderate measured architecture and equal 5000-FE final budgets selected under the user-authorized few-day compute allowance.",
+  "runtime_hotfix": {
+    "date": "2026-10-24",
+    "purpose": "Bounded Windows atomic-replacement retries and checkpoint-compatible timer I/O",
+    "guide": "docs/Windows_IO_Hotfix.md",
+    "compatibility": "docs/Runtime_Source_Compatibility.json",
+    "read_only_audit": "check_resume.py",
+    "tests": {
+      "total": 43,
+      "passed": 42,
+      "skipped_native_windows": 1
+    }
+  }
 }

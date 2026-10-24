@@ -2,6 +2,11 @@
 
 Research project by Mohamad Hasan Behboodi, Allameh Tabataba'i University.
 
+For an interrupted Windows run with WinError 5 while saving timing.json, use the
+[checkpoint-compatible I/O hotfix and resume guide](docs/Windows_IO_Hotfix.md).
+Keep the existing experiment outputs; check_resume.py audits compatibility without
+rewriting saved keys or restarting completed models.
+
 The final profile was chosen from two training-only benchmarks on the Windows RTX 3080
 server and the researcher's few-day compute allowance. It uses three LSTM layers and
 compares DLSTM, logistic regression, training-majority, CHOA, WCHOA, reconstructed
